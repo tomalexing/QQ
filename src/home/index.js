@@ -10,32 +10,164 @@
 
 import React, { PropTypes } from 'react';
 import Layout from '../../components/Layout';
-import s from './styles.css';
 import { title, html } from './index.md';
+import Button from '../../components/Button';
+import Link from '../../components/Link';
+import Cart from "../../components/Cart";
+import firebase from "firebase";
+import SS from "react-slick"
+import store from "./../store"
+import {addClass, removeClass} from  "./../helper"
 
 class HomePage extends React.Component {
 
   static propTypes = {
-    articles: PropTypes.array.isRequired,
+    articles: PropTypes.array,
   };
 
-  componentDidMount() {
-    document.title = title;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      quiz: null,
+      initSlider: false
+    }
+    this.numberOfQuiz = -1
+  
   }
 
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  }
+
+  componentWillMount() {
+
+    const dbRef = firebase.database().ref()
+    let quizObj = {};
+    dbRef.child('quiz').limitToLast(10).once("value").then((quiz) => {
+      return quiz.val();
+    }).then((quiz, err) => {
+      if (quiz) {
+        this.setState({ quiz: quiz });
+        this.numberOfQuiz = Object.keys(quiz).length
+      }
+
+      if (err) console.log(err);
+
+    })
+
+
+  }
+
+  animateOut(prev, next){
+    let diff = next - prev
+    let prevNode = document.querySelector(`.slick-slide[data-index='${prev}']`)
+    let allNde = document.querySelectorAll(`.slick-slide`)
+
+    // if(diff>0){
+    //   let firstNode = document.querySelector(`.slick-slide[data-index='${next}']`) || document.querySelector(`.slick-slide[data-index='${(next)%next}']`)
+    //   let secondNode = document.querySelector(`.slick-slide[data-index='${next+1}']`) || document.querySelector(`.slick-slide[data-index='${(next+1)%next}']`)
+    //   let thirdNode = document.querySelector(`.slick-slide[data-index='${next+2}']`) || document.querySelector(`.slick-slide[data-index='${(next+2)%next}']`)
+    // }else{
+    //   let firstNode = document.querySelector(`.slick-slide[data-index='${next-1}']`) || document.querySelector(`.slick-slide[data-index='${(next-1)%next}']`)
+    //   let secondNode = document.querySelector(`.slick-slide[data-index='${next-2}']`) || document.querySelector(`.slick-slide[data-index='${(next-2)%next}']`)
+    //   let thirdNode = document.querySelector(`.slick-slide[data-index='${next-3}']`) || document.querySelector(`.slick-slide[data-index='${(next-3)%next}']`)
+    // }
+    // debugger;
+
+
+    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev|next")),0)
+    setTimeout(()=>addClass(prevNode, diff > 0 ? "next" : "prev"),0)
+    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev|next")),1000)
+  }
+
+ get leftArrow() {
+    return React.createElement(Button, {type: 'fab', primary: true}, <i className="material-icons ">chevron_left</i>);
+}
+
+
+
+ get rigthArrow() {
+       return React.createElement(Button, {type: 'fab', primary: true}, <i className="material-icons ">chevron_right</i>);
+}
+
+
   render() {
+    var quizTest = {
+      'question': "faadfafa",
+      'q1': {
+        quantity: 11,
+        srcImg: "img/1.jpg",
+        value: "asdasd"
+      },
+      'q2': {
+        quantity: 2,
+        srcImg: "img/2.png",
+        value: "asdasd"
+      },
+      cartId: '-KPs0qRtYWworeGt1WD-'
+    }
+    const sliderConfig = {
+      dots: false,
+      lazyLoad: false,
+      fade: true,
+      infinite: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      centerMode: false,
+      swipe: false,
+      nextArrow: this.rigthArrow,
+      prevArrow: this.leftArrow,
+      beforeChange: this.animateOut,
+      adaptiveHeight: true,
+      speed: 500 
+    }
+  
     return (
-      <Layout className={s.content}>
-        <div dangerouslySetInnerHTML={{ __html: html }} />
-        <h4>Articles</h4>
-        <ul>
-          {this.props.articles.map((article, i) =>
-            <li key={i}><a href={article.url}>{article.title}</a> by {article.author}</li>
-          )}
-        </ul>
-        <p>
-          <br /><br />
-        </p>
+      <Layout className={"quiz-container"}>
+
+        <div className="quiz">
+          {
+            (this.state.quiz)
+              ?
+              <SS {...sliderConfig} >{
+                Object.keys(this.state.quiz).map((q, index) => {
+                  window.that = this;
+                    return <div data-index={index} key={index}><Cart key={q}  quiz={{
+                      question: this.state.quiz[q]['question'],
+                      q1: Object.values(this.state.quiz[q]['answers'])[0],
+                      q2: Object.values(this.state.quiz[q]['answers'])[1],
+                      cartId: q,
+                      leftCartUID: Object.entries(that.state.quiz[q]['answers'])[0][0],
+                      rightCartUID: Object.entries(that.state.quiz[q]['answers'])[1][0]
+                    }} /></div>
+                })
+              }</SS>
+              :
+              <div className="preloading__cart">
+                  <p>Quiz Is Starting!!!</p>
+                  <p>Pick That You Like More</p>
+              </div> 
+            
+          }
+
+        </div>
+
       </Layout>
     );
   }

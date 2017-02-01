@@ -1,0 +1,71 @@
+$quiz-bg: #474E65
+
+
+
+.quiz-header
+	background: $quiz-bg
+	box-shadow: 0 2px 50px rgba(0,0,0,.5)
+	+r(1024)
+		display: flex
+	&__row
+		padding: 40px
+		img
+			height: 50px
+		+r(1024)
+			padding: 0 16px
+			img
+				height: 50px
+				+r(375)
+					height: 36px
+		+r(375)
+			padding-right: 0px
+
+
+		.quiz-singin
+			color: white
+	&__create
+		+quiz-btn
+		margin-left: 10px
+		background-color: white
+		color: $quiz-bg
+		font-weight: 600
+		margin-right: 0px
+		+r(840)
+			margin-right: 10px
+		&:hover,
+		&:focus,
+		&:active
+			color: $quiz-bg 
+			background-color: white  !important
+			box-shadow: 0 2px 20px rgba(0,0,0,.6) !important
+
+.login
+	&-status
+	&-details__button
+		height: 51px
+		width: 51px
+		min-width: 51px
+		border-radius: 50%
+		overflow: hidden
+		padding: 0
+		margin: 0
+		img.avatar
+			height: 41px
+			width: 41px
+			border-radius: 50%
+			overflow: hidden
+			vertical-align: middle
+	&-bubble
+		position: absolute
+		height: 0
+		overflow: hidden
+	&-bubble__active
+		height: auto
+	&-bubble__hider
+		padding: 8px 9px
+		background-color: white
+		color: #474E65
+		border-radius: 3px
+		button
+			display: block
+			

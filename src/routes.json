@@ -17,7 +17,7 @@
     "page": "./about"
   },
   {
-    "path": "/tasks/:status(pending|completed)?",
-    "page": "./home"
+    "path": "/quest",
+    "page": "./quest"
   }
 ]

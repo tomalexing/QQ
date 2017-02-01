@@ -19,6 +19,12 @@ import { Provider } from 'react-redux';
 import store from './store';
 import router from './router';
 import history from './history';
+import auth, {isAdminArea}  from './auth';
+import './../sass/screen.sass'; // Fuck the system
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+
+injectTapEventPlugin();
 
 let routes = require('./routes.json').default; // Loaded with utils/routes-loader.js
 const container = document.getElementById('container');
@@ -27,10 +33,21 @@ function renderComponent(component) {
   ReactDOM.render(<Provider store={store}>{component}</Provider>, container);
 }
 
+// middleware for check if user login
+function checkAdmin(component){
+    if ( isAdminArea(component) ) {
+      const error = new Error('Forbidden');
+      error.status = 403;
+      return Promise.reject(error);
+    }
+  return component;
+}
+
 // Find and render a web page matching the current URL path,
 // if such page is not found then render an error page (see routes.json, core/router.js)
 function render(location) {
   router.resolve(routes, location)
+    .then(checkAdmin)
     .then(renderComponent)
     .catch(error => router.resolve(routes, { ...location, error }).then(renderComponent));
 }

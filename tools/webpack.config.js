@@ -33,9 +33,7 @@ const config = {
 
   // The entry point for the bundle
   entry: [
-    /* Material Design Lite (https://getmdl.io) */
-    '!!style-loader!css-loader!react-mdl/extra/material.min.css',
-    'react-mdl/extra/material.min.js',
+
     /* The main entry point of your JavaScript application */
     './main.js',
   ],
@@ -124,6 +122,30 @@ const config = {
         ],
       },
       {
+        test: /\.sass$|.scss$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: isDebug,
+              minimize: !isDebug,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: './tools/postcss_Sass.config.js',
+            },
+          },
+           {
+            loader: 'sass-loader',
+          },
+        ],
+      },
+      {
         test: /\.json$/,
         exclude: [
           path.resolve(__dirname, '../src/routes.json'),
@@ -162,6 +184,7 @@ const config = {
       },
     ],
   },
+
 };
 
 // Optimize the bundle in release (production) mode

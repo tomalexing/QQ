@@ -1,0 +1,426 @@
+$quiz-bg: #474E65
+$quiz-red: #FC3868
+
+
+
+
+// CONTAINER
+.quiz-out
+	background: $quiz-bg
+	font-family: 'Open Sans', sans-serif
+.quiz-container
+	display: flex
+	flex: 1 0 auto
+	flex-direction: column
+	margin: auto
+	max-width: 1000px
+	width: 100%
+	color: white
+	+r(1024)
+		padding: 0 16px
+	
+.mdl-layout__content
+    display: flex
+    flex-direction: column
+
+
+// SLIDER 
+.slick-list
+	overflow: visible !important
+.stack__titles li.current 
+	opacity: 1
+	pointer-events: auto
+.slick-track
+	transform-style: preserve-3d
+	perspective: 10000px
+.slick-slider
+	position: relative
+	.slick-slide
+		min-height: 444px
+		transform-style: preserve-3d
+	.slick-slide.slick-active 
+			opacity: 1 !important
+			transform: translate3d(0, 0,0) 
+			z-index: 10 
+			top: 0 !important
+	+rmin(840)
+		.slick-slide.next
+			transform-style: preserve-3d
+			transform-origin: center center
+			transform: translate3d(1000px, 0, 0) !important
+			opacity: 0 
+			transition: transform, 1s !important
+			z-index: 100 !important
+		.slick-slide.prev
+			transform-style: preserve-3d
+			transform-origin: center center
+			transform: translate3d(-1500px, 0, 0) !important
+			opacity: 0 
+			transition: transform, 1s !important
+			z-index: 100 !important
+		.slick-slide.slick-active + .slick-slide
+			opacity: 1 !important
+			transform: translate3d(0, -35px,0) scale(.9) 
+			z-index: 9  
+			top: 0 !important
+			
+		.slick-slide.slick-active + .slick-slide + .slick-slide
+			opacity: 1 !important
+			transform: translate3d(0, -70px, 0) scale(.8) 
+			z-index: 8 
+			top: 0 !important
+			
+		.slick-slide.slick-active + .slick-slide + .slick-slide + .slick-slide
+			opacity: 1 !important
+			transform: translate(0, -105px) scale(.7) 
+			z-index: 7 !important
+			top: 0 !important
+		
+
+// CART
+.quiz
+	margin: auto
+	max-width: 100%
+	+r(1280)
+		margin: 50px 20px 50px
+	+r(840)
+		margin: 50px 20px 150px
+	&-cart
+		z-index: 100
+		position: relative
+		margin: auto
+		border-radius: 8px
+		overflow: hidden
+		max-width: 750px
+		height: auto
+		min-height: 444px
+		box-shadow:  0px 2px 20px 0px rgba(0, 0, 0, 0.5)
+	&-cart__title
+		padding: 22px 50px
+		font-size: 26px
+		color: white
+		background: #FC3868
+		font-weight: 100
+	&-cart__questions
+		display: flex
+		flex-wrap: nowrap
+		flex-direction: row
+		background-color: white
+		+r(840)
+			flex-wrap: wrap
+			flex-direction: column
+	&-cart__questions-in
+		flex: 0 1 auto
+		z-index: 2
+		border-radius: 8px
+		position: relative
+		overflow: hidden
+		transition: all 0.2s ease
+		cursor: pointer
+		&:before
+			content: ""
+			position: absolute
+			top: 0
+			left: 0
+			right: 0
+			bottom: 0
+			background: linear-gradient(to top, rgba(0,0,0,.3), rgba(0,0,0,0) 40%)
+		&:hover
+			box-shadow: 0 2px 20px rgba(0,0,0, .5)
+		img
+			vertical-align: middle
+			overflow: hidden
+			object-fit: cover
+			z-index: 1
+			+r(840)
+				width: 100%
+		.ink 
+			display: block
+			position: absolute
+			z-index: 10
+			background: rgba(#FC3868, 0.7)
+			transform: scale(0)
+			border-radius: 100%
+			&.animated
+				animation: ripple 0.65s linear forwards
+
+	.mdl-button--primary
+		background: rgba(255,255,255, .5) !important	
+
+	&-cart__questions-left
+		margin: 50px 25px 40px 50px
+		+r(840)
+			margin: 25px 25px 25px 25px
+	&-cart__questions-right
+		margin: 50px 50px 40px 25px
+		+r(840)
+			margin: 25px 25px 25px 25px
+
+	&-cart__questions__inner
+		display: block
+		position: absolute
+		left: 0
+		top: 0
+		bottom: 0
+		right: 0
+		z-index: -1
+		opacity: 0
+		+tr(opacity 0.3s)
+		&.is__picked
+			z-index: 15
+			background: rgba(#FC3868, 0.7)
+			opacity: 1
+		
+		&.is__show
+			z-index: 15
+			background: rgba(#FC3868, 0.7)
+			opacity: 1
+			+tr(opacity 1s)
+		&-score
+			opacity: 1
+			+tr(opacity .5s)
+			&.blackout
+				opacity: 0
+		&-score__number__cover
+			text-align: center
+			color: white
+			font: normal 100 18px/1 'Open Sans'
+			margin: 20px 0 20px
+	
+		&-choosed
+			position: absolute
+			top: 20px
+			left: 30px
+			opacity: 0
+			visibility: hidden
+			&.is__active
+				opacity: 1
+				visibility: visible
+		&-score__progress
+			position: relative
+			width: 80%
+			height: 2px
+			margin: 12px auto 0
+			background: rgba(white,.3)
+			.progress
+				position: absolute
+				left: 0
+				top: 0
+				height: 2px
+				appearance: none
+				background: rgba(white,.7)
+		&-score__pers__cover
+			text-align: center
+			color: white
+			margin-top: 18px
+			font-size: 18px 
+			span
+				font: normal 100 60px/0.8 'Open Sans'
+		&-score__pers
+			display: inline-block
+			font: normal 100 120px/0.8 'Open Sans'
+			
+		&-score__number__add
+			
+		&-value
+			position: absolute
+			bottom: 10px	
+			left: 0
+			right: 0
+			height: auto
+			text-align: center
+			color: white
+			font-weight: 500
+			font-size: 18px
+	&-cart__questions-between
+		flex: 1 0 auto
+	&-cart__social
+		background-color: white 
+		padding-bottom: 40px
+		&-in
+			display: flex
+			flex-direction: row
+			flex-wrap: nowrap
+			align-items: center
+			justify-content: flex-end
+			margin: 0 34px
+			+r(840)
+				display: flex
+				flex-direction: column
+
+	&-social__btn
+		min-width: 131px
+		height: 40px
+		border-radius: 20px
+		margin-right: 16px
+		+tr(box-shadow .5s)
+		+r(840)
+			margin-top: 14px
+		a,
+		buttom
+			display: block
+			line-height: 40px
+			text-transform: uppercase
+			text-decoration: none
+			color: white
+			padding: 0 18px
+			cursor: pointer
+		svg
+			margin: -3px 10px 0 0
+		&:hover
+			box-shadow: 0 2px 20px rgba(0,0,0,.5)
+		&:active
+			box-shadow: 0 2px 20px rgba(0,0,0,.3)
+	
+	&-social__btn-tw
+		background: #009EF6
+	&-social__btn-fb
+		background: #3645AF
+	&-social__btn-all
+		background: #FC3868
+// FOOTER AREA - Subscription
+.quiz
+	&-subscribe
+		display: block
+	&-subscribe__label
+		display: inline-block
+		line-height: 35px
+		font-size: 15px
+		text-transform: uppercase
+		color: white 
+		padding-right: 20px
+	&-subscribe__cover__input
+		display: inline-block
+		border-radius: 40px
+		background-color: $quiz-bg
+		border: 1px solid rgba(255, 255, 255, .3)
+		line-height: 35px
+		+r(840)
+			margin-bottom: 20px
+		input[type="email"]
+			background: transparent
+			line-height: 35px
+			font-size: 18px
+			font-weight: 100
+			color: white !important
+			margin: 0 11px 0 20px
+			width: 160px
+			+tr(width .5s)
+			&:focus
+				width: 180px
+				opacity: .6
+			&::input-placeholder
+				color: rgba(255, 255, 255, .3)
+			&:focus::input-placeholder
+				color: rgba(255, 255, 255, .7)
+			&:-webkit-autofill
+				box-shadow: 0 0 0px 1000px $quiz-bg inset 
+				-webkit-text-fill-color: rgba(255, 255, 255, .5)
+			&:-webkit-autofill:focus
+				-webkit-text-fill-color: rgba(255, 255, 255, .7)
+			+r(840)
+				&:focus
+					width: 160px
+					
+		input[type="submit"]
+			background: $quiz-red
+			line-height: 35px
+			min-width: 131px
+			height: 40px
+			border-radius: 20px
+			margin: 4px
+			font-size: 16px
+			color: white
+			transition: box-shadow 0.5s
+			text-transform: uppercase
+			-webkit-appearance: none
+			&:hover
+				box-shadow: 0 2px 20px rgba(0,0,0,.5)  !important
+			
+
+			
+
+// FOOTER AREA - menu
+#container footer.mdl-mini-footer
+	flex: 0 0 80px
+	padding: 16px 40px
+	background: #474E65 
+	border-top: 1px solid rgba(255, 255, 255, .3)
+	+r(840)
+		padding: 16px 20px
+.mdl-mini-footer__left-section
+	display: flex
+.mdl-mini-footer .mdl-logo,
+.mdl-mini-footer__link-list li	
+	line-height: 48px
+	display: flex
+	flex-direction: row
+.mdl-mini-footer__link-list
+	color: white
+.quiz-footer__devider
+	line-height: 48px
+	margin-left: -7px
+	padding-right: 10px
+	vertical-align: middle
+	+r(840)
+		padding: 0 10px
+		margin-left: 0px
+
+// Preloading
+.preloading__cart
+	text-align: center
+	max-width: 100%
+	width: 400px
+	margin: 0 auto
+	background: $quiz-red
+	border-radius: 8px
+	box-shadow: 0 2px 20px rgba(0,0,0,.5)
+	p
+		font-size: 22px
+		display: block 
+		color: rgb(255, 255, 255)
+
+// POP UP
+dialog:not([open])
+	display: none
+
+.mdl-dialog
+	padding: 0
+	border-radius: 8px
+	box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.5)
+	min-width: 320px
+	&__title
+		padding: 22px 22px
+		font-size: 26px
+		color: white
+		background: #FC3868
+		font-weight: 100
+		overflow: hidden
+		border-top-left-radius: 8px
+		border-top-right-radius: 8px
+	&__content
+		padding-bottom: 16px 
+	&__actions
+		padding: 8px 24px 24px 
+	address
+		display: inline-block
+		color: #FC3868
+		padding: 4px
+		font-weight: 900
+		line-height: 1.4
+	span
+		line-height: 1.4
+	button
+		+quiz-btn
+	.quiz-dialog__cart__social
+		margin: 0 -14px
+	.quiz-dialog__cart__social-in
+		display: flex
+		flex-flow: row wrap	
+		justify-content: flex-start
+	.quiz-dialog__social__btn
+		width: 60px
+		padding: 10px
+		svg
+			cursor: pointer
+

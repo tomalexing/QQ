@@ -12,13 +12,17 @@ import { createStore } from 'redux';
 
 // Centralized application state
 // For more information visit http://redux.js.org/
-const initialState = { count: 0 };
+const initialState = { user: {}, loaded : 0 };
 
 const store = createStore((state = initialState, action) => {
   // TODO: Add action handlers (aka "reducers")
   switch (action.type) {
-    case 'COUNT':
-      return { ...state, count: (state.count) + 1 };
+    case 'AUTHORIZE':
+      return { ...state, user: action.user  };
+    case 'NOT_AUTHORIZE':
+      return { ...state, user: {}  };
+    case 'LOADED' :
+      return { ...state, loaded: (state.loaded) + 1  };
     default:
       return state;
   }

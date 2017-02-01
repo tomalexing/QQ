@@ -8,8 +8,12 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-.content {
-  margin: 0 auto;
-  max-width: 1000px;
-  width: 100%;
-}
+/* eslint-disable global-require */
+
+module.exports = () => ({
+  plugins: [
+    // Add vendor prefixes to CSS rules using values from caniuse.com
+    // https://github.com/postcss/autoprefixer
+    require('autoprefixer')(),
+  ],
+});
