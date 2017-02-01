@@ -47,17 +47,13 @@ class Header extends React.Component {
 
   render() {
     const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.handleClose}
-        />,
-      <FlatButton
-        label="Submit"
-        primary={true}
+      <RaisedButton
+        label="Close"
+        secondary={true}
         keyboardFocused={true}
         onTouchTap={this.handleClose}
-        />,
+        className="mdl-button"
+        />
     ];
     return (
       <header className={`mdl-layout__header quiz-header`}>
@@ -75,6 +71,8 @@ class Header extends React.Component {
             open={this.state.open}
             onRequestClose={this.handleClose}
             contentClassName="mdl-dialog"
+            titleClassName="mdl-dialog__title"
+            titleStyle={{color: "white"}}
             >
             <span> You can connect with us by email</span> <address>support@iondigi.com</address> <span> to share you vision of project or just subsribe and We'll consider such kind of functionallity.</span>
           </Dialog>

@@ -5,6 +5,12 @@ import cookie from 'react-cookie';
 import firebase from "firebase";
 import store from "./../../src/store"
 import { addClass, removeClass } from "./../../src/helper"
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 
 class Cart extends React.Component {
 
@@ -27,7 +33,8 @@ class Cart extends React.Component {
             quantity2: 0,
             cartIsChoosedLeft: false || alreadyChecked.left,
             cartIsChoosedRight: false || alreadyChecked.right,
-            release: true
+            release: true,
+            open: false
         };
 
     }
@@ -218,18 +225,22 @@ class Cart extends React.Component {
 
     componentDidMount() {
       
-        if (! this.share.showModal) {
-        dialogPolyfill.registerDialog(this.share);
-        }
-        this.openShare.addEventListener('click', () => this.share.showModal());
-        this.share.querySelector('.close').addEventListener('click', () => this.share.close());
     }
 
     componentWillUnmount() {
         
     }
+    handleOpen = () => {
+        this.setState({ open: true });
+    }
 
+    handleClose = () => {
+        this.setState({ open: false });
+    }
 
+    getChildContext() {
+        return { muiTheme: getMuiTheme(baseTheme) };
+    }
 
     render() {
         var {question, q1, q2, } = this.props.quiz
@@ -244,7 +255,15 @@ class Cart extends React.Component {
         cookie.save(`cartIsChoosed-${this.props.quiz.cartId}`, this.state.cartIsChoosedLeft ? `Left` :
             this.state.cartIsChoosedRight ? `Right` : '', { path: '/' })
 
-
+        const actions = [
+            <RaisedButton
+                label="Close"
+                secondary={true}
+                keyboardFocused={true}
+                onTouchTap={this.handleClose}
+                className="mdl-button"
+                />
+        ];
         return (<div className="quiz-cart ">
             <div className="quiz-cart__title ">
                 {question}
@@ -330,7 +349,16 @@ class Cart extends React.Component {
                     </li>
                 </ul>
             </div>
-            <dialog id="share" className="mdl-dialog"  ref={node => (this.share = node)}>
+           <Dialog
+            title="Is Needed?"
+            actions={actions}
+            modal={false}
+            open={this.state.open}
+            onRequestClose={this.handleClose}
+            contentClassName="mdl-dialog"
+            titleClassName="mdl-dialog__title"
+            titleStyle={{color: "white"}}
+            >
                   <h4 className="mdl-dialog__title">Share</h4>
                   <div className="mdl-dialog__content">
                     <div className="quiz-dialog__cart__social">
@@ -428,14 +456,14 @@ class Cart extends React.Component {
 
                     </div>
                   </div>
-                  <div className="mdl-dialog__actions">
-                    <button type="button" className="mdl-button close">Close</button>
-                  </div>
-            </dialog>
+                 
+            </Dialog>
         </div>
         )
     }
 
 }
-
+Cart.childContextTypes = {
+  muiTheme: React.PropTypes.object.isRequired,
+};
 export default Cart;

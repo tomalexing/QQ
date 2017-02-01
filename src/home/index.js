@@ -15,9 +15,10 @@ import Button from '../../components/Button';
 import Link from '../../components/Link';
 import Cart from "../../components/Cart";
 import firebase from "firebase";
-import SS from "react-slick"
+import SS from "react-slick";
 import store from "./../store"
-import {addClass, removeClass} from  "./../helper"
+import {addClass, removeClass} from  "./../helper";
+
 
 class HomePage extends React.Component {
 
