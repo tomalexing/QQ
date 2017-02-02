@@ -3,11 +3,11 @@ $quiz-red: #FC3868
 
 
 
-
 // CONTAINER
 .quiz-out
 	background: $quiz-bg
 	font-family: 'Open Sans', sans-serif
+	height: 100%
 .quiz-container
 	display: flex
 	flex: 1 0 auto
@@ -342,6 +342,8 @@ $quiz-red: #FC3868
 
 // FOOTER AREA - menu
 #container footer.mdl-mini-footer
+	display: flex
+	justify-content: space-between
 	flex: 0 0 80px
 	padding: 16px 40px
 	background: #474E65 
@@ -351,16 +353,21 @@ $quiz-red: #FC3868
 .mdl-mini-footer__left-section
 	display: flex
 .mdl-mini-footer .mdl-logo,
-.mdl-mini-footer__link-list li	
+.mdl-mini-footer__link-list li	a
 	line-height: 48px
 	display: flex
 	flex-direction: row
+	color: rgba(255, 255, 255, .7)
+	text-decoration: none
 .mdl-mini-footer__link-list
 	color: white
+	display: flex
+
+
 .quiz-footer__devider
 	line-height: 48px
-	margin-left: -7px
-	padding-right: 10px
+	margin-left: 17px
+	padding-right: 17px
 	vertical-align: middle
 	+r(840)
 		padding: 0 10px
@@ -379,49 +386,4 @@ $quiz-red: #FC3868
 		font-size: 22px
 		display: block 
 		color: rgb(255, 255, 255)
-
-// POP UP
-dialog:not([open])
-	display: none
-
-.mdl-dialog
-	padding: 0
-	border-radius: 8px
-	box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.5)
-	min-width: 320px
-	overflow: hidden
-	&__title
-		padding: 22px 22px
-		font-size: 26px
-		color: white
-		background: #FC3868
-		font-weight: 100
-		overflow: hidden
-		border-top-left-radius: 8px
-		border-top-right-radius: 8px
-	&__content
-		padding-bottom: 16px 
-	&__actions
-		padding: 8px 24px 24px 
-	address
-		display: inline-block
-		color: #FC3868
-		padding: 4px
-		font-weight: 900
-		line-height: 1.4
-	span
-		line-height: 1.4
-	button
-		+quiz-btn
-	.quiz-dialog__cart__social
-		margin: 0 -14px
-	.quiz-dialog__cart__social-in
-		display: flex
-		flex-flow: row wrap	
-		justify-content: flex-start
-	.quiz-dialog__social__btn
-		width: 60px
-		padding: 10px
-		svg
-			cursor: pointer
 

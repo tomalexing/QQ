@@ -17,8 +17,11 @@ import Cart from "../../components/Cart";
 import firebase from "firebase";
 import SS from "react-slick";
 import store from "./../store"
-import {addClass, removeClass} from  "./../helper";
-
+import FontIcon from 'material-ui/FontIcon';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { addClass, removeClass } from "./../helper";
+import myTheme from "./../theme"
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 class HomePage extends React.Component {
 
@@ -34,7 +37,7 @@ class HomePage extends React.Component {
       initSlider: false
     }
     this.numberOfQuiz = -1
-  
+
   }
 
   shuffle(array) {
@@ -75,7 +78,7 @@ class HomePage extends React.Component {
 
   }
 
-  animateOut(prev, next){
+  animateOut(prev, next) {
     let diff = next - prev
     let prevNode = document.querySelector(`.slick-slide[data-index='${prev}']`)
     let allNde = document.querySelectorAll(`.slick-slide`)
@@ -92,21 +95,28 @@ class HomePage extends React.Component {
     // debugger;
 
 
-    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev|next")),0)
-    setTimeout(()=>addClass(prevNode, diff > 0 ? "next" : "prev"),0)
-    setTimeout(()=>Array.from(allNde).map( node => removeClass(node, "prev|next")),1000)
+    setTimeout(() => Array.from(allNde).map(node => removeClass(node, "prev|next")), 0)
+    setTimeout(() => addClass(prevNode, diff > 0 ? "next" : "prev"), 0)
+    setTimeout(() => Array.from(allNde).map(node => removeClass(node, "prev|next")), 1000)
   }
 
- get leftArrow() {
-    return React.createElement(Button, {type: 'fab', primary: true}, <i className="material-icons ">chevron_left</i>);
-}
+  get leftArrow() {
+    return <div> <FloatingActionButton 
+      backgroundColor="hsla(0,0%,100%,.5)">
+      <FontIcon color="#fff"  className="material-icons" >keyboard_arrow_left</FontIcon>
+      </FloatingActionButton></div>
+  }
 
 
-
- get rigthArrow() {
-       return React.createElement(Button, {type: 'fab', primary: true}, <i className="material-icons ">chevron_right</i>);
-}
-
+  get rigthArrow() {
+    return <div> <FloatingActionButton 
+      backgroundColor="hsla(0,0%,100%,.5)">
+      <FontIcon color="#fff"  className="material-icons" >keyboard_arrow_right</FontIcon>
+      </FloatingActionButton></div> 
+  }
+  getChildContext() {
+    return { muiTheme: getMuiTheme(myTheme) };
+  }
 
   render() {
     var quizTest = {
@@ -136,9 +146,9 @@ class HomePage extends React.Component {
       prevArrow: this.leftArrow,
       beforeChange: this.animateOut,
       adaptiveHeight: true,
-      speed: 500 
+      speed: 500
     }
-  
+
     return (
       <Layout className={"quiz-container"}>
 
@@ -149,22 +159,22 @@ class HomePage extends React.Component {
               <SS {...sliderConfig} >{
                 Object.keys(this.state.quiz).map((q, index) => {
                   window.that = this;
-                    return <div data-index={index} key={index}><Cart key={q}  quiz={{
-                      question: this.state.quiz[q]['question'],
-                      q1: Object.values(this.state.quiz[q]['answers'])[0],
-                      q2: Object.values(this.state.quiz[q]['answers'])[1],
-                      cartId: q,
-                      leftCartUID: Object.entries(that.state.quiz[q]['answers'])[0][0],
-                      rightCartUID: Object.entries(that.state.quiz[q]['answers'])[1][0]
-                    }} /></div>
+                  return <div data-index={index} key={index}><Cart key={q} quiz={{
+                    question: this.state.quiz[q]['question'],
+                    q1: Object.values(this.state.quiz[q]['answers'])[0],
+                    q2: Object.values(this.state.quiz[q]['answers'])[1],
+                    cartId: q,
+                    leftCartUID: Object.entries(that.state.quiz[q]['answers'])[0][0],
+                    rightCartUID: Object.entries(that.state.quiz[q]['answers'])[1][0]
+                  }} /></div>
                 })
               }</SS>
               :
               <div className="preloading__cart">
-                  <p>Quiz Is Starting!!!</p>
-                  <p>Pick That You Like More</p>
-              </div> 
-            
+                <p>Quiz Is Starting!!!</p>
+                <p>Pick That You Like More</p>
+              </div>
+
           }
 
         </div>
@@ -174,5 +184,7 @@ class HomePage extends React.Component {
   }
 
 }
-
+HomePage.childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired,
+};
 export default HomePage;

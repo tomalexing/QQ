@@ -66,7 +66,7 @@ class Q extends React.Component {
         });
 
         return(
-            <article className="qCart" >
+            <article className="qCart " >
                 <div className="qCart-title" >{cartQuest.question}</div>
                 <div className="qCart-img">{ pickedAns && <img src={answers[pickedAns].hindImg } /> }</div>
                 <ul className="qCart-list__ans" ref={node => {this.ansList = node}}>{ ansToRender }</ul>

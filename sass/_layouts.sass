@@ -1,5 +1,21 @@
 $quiz-bg: #474E65
 
+.mdl-layout
+	position: absolute
+	width: 100%
+	height: 100%
+
+.mdl-layout__inner-container
+	width: 100%
+	height: 100%
+	display: flex
+	flex-direction: column
+	overflow-y: auto
+	overflow-x: hidden
+	position: relative
+	overflow-scrolling: touch
+.mdl-layout__content
+	height: calc(100% - 75px)
 
 
 .quiz-header
@@ -8,7 +24,10 @@ $quiz-bg: #474E65
 	+r(1024)
 		display: flex
 	&__row
-		padding: 40px
+		display: flex
+		flex-flow: row nowrap
+		justify-content: space-between
+		padding: 10px
 		img
 			height: 50px
 		+r(1024)
@@ -20,25 +39,16 @@ $quiz-bg: #474E65
 		+r(375)
 			padding-right: 0px
 
-
 		.quiz-singin
 			color: white
+	&__spacer
+		display: flex
+		flex: 1 1 auto
 	&__create
-		+quiz-btn
-		margin-left: 10px
-		background-color: white
-		color: $quiz-bg
-		font-weight: 600
-		margin-right: 0px
+		margin: 7px 10px 0 0
 		+r(840)
 			margin-right: 10px
-		&:hover,
-		&:focus,
-		&:active
-			color: $quiz-bg 
-			background-color: white  !important
-			box-shadow: 0 2px 20px rgba(0,0,0,.6) !important
-
+		
 .login
 	&-status
 	&-details__button

@@ -17,6 +17,10 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import cx from 'classnames';
+import s from '../Cart/cart.css'
+import myTheme from "./../../src/theme";
+
 
 class Header extends React.Component {
 
@@ -42,37 +46,49 @@ class Header extends React.Component {
   };
 
   getChildContext() {
-    return { muiTheme: getMuiTheme(baseTheme) };
+    return { muiTheme: getMuiTheme(myTheme) };
   }
 
   render() {
-    const actions = [
-      <RaisedButton
-        label="Close"
-        secondary={true}
-        keyboardFocused={true}
-        onTouchTap={this.handleClose}
-        className="mdl-button"
-        />
-    ];
+
     return (
-      <header className={`mdl-layout__header quiz-header`}>
-        <div className={`mdl-layout__header-row quiz-header__row`}>
-          <Link className={`mdl-layout-title quiz-header__logo`} to="/">
+      <header className={`quiz-header`}>
+        <div className={`quiz-header__row`}>
+          <Link className={`quiz-header__logo`} to="/">
             <img className="logo" src="./img/quiz-logo.png" />
           </Link>
-          <div className="mdl-layout-spacer"></div>
+          <div className="quiz-header__spacer"></div>
 
-          <RaisedButton className="quiz-header__create" label="CREATE QUIZ" onTouchTap={this.handleOpen} />
+          <RaisedButton
+              backgroundColor="#fff"
+              className={cx(s.btn, 'quiz-header__create')}
+              style={{ borderRadius: "20px" }}
+              buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
+              onTouchTap={this.handleOpen}
+              labelStyle={{ color: '#474e65', fontWeight: 600, fontSize: 15 }}
+
+              label="CREATE QUIZ" />
           <Dialog
-            title="Is Needed?"
-            actions={actions}
-            modal={false}
-            open={this.state.open}
-            onRequestClose={this.handleClose}
-            contentClassName="mdl-dialog"
-            titleClassName="mdl-dialog__title"
-            titleStyle={{color: "white"}}
+              title="Is Needed?"
+              actions={[  
+                <RaisedButton
+                  label="Close"
+                  backgroundColor="#FC3868"
+                  className={s.btn}
+                  style={{ borderRadius: "20px" }}
+                  buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
+                  onTouchTap={this.handleClose}
+                  labelStyle={{ color: '#fff' }}
+                  />
+              ]}
+              modal={false}
+              open={this.state.open}
+              onRequestClose={this.handleClose}
+              bodyStyle={{marginTop: 20}}
+              contentClassName="mdl-dialog"
+              titleClassName="mdl-dialog__title"
+              titleStyle={{ color: "white" }}
+              contentStyle={{ maxWidth: '320px' }}
             >
             <span> You can connect with us by email</span> <address>support@iondigi.com</address> <span> to share you vision of project or just subsribe and We'll consider such kind of functionallity.</span>
           </Dialog>
