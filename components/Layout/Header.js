@@ -15,10 +15,8 @@ import Button from './../Button';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import cx from 'classnames';
-import s from '../Cart/cart.css'
 import myTheme from "./../../src/theme";
 
 
@@ -29,14 +27,9 @@ class Header extends React.Component {
     this.state = {
       open: false
     };
-  }
-  componentDidMount() {
-
+    
   }
 
-  componentWillUnmount() {
-
-  }
   handleOpen = () => {
     this.setState({ open: true });
   };
@@ -55,30 +48,31 @@ class Header extends React.Component {
       <header className={`quiz-header`}>
         <div className={`quiz-header__row`}>
           <Link className={`quiz-header__logo`} to="/">
-            <img className="logo" src="./img/quiz-logo.png" />
+            <img className="logo" src={`http://${ window.location.host}/img/quiz-logo.png`} />
           </Link>
           <div className="quiz-header__spacer"></div>
-
+           <RaisedButton
+            label="Toggle Drawer"
+            onTouchTap={this.props.handleToggle}
+          />
           <RaisedButton
-              backgroundColor="#fff"
-              className={cx(s.btn, 'quiz-header__create')}
-              style={{ borderRadius: "20px" }}
+              className={cx('quiz-btn', 'quiz-header__create')}
+              style={{ borderRadius: "20px"}}
               buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
               onTouchTap={this.handleOpen}
               labelStyle={{ color: '#474e65', fontWeight: 600, fontSize: 15 }}
-
+              rippleStyle={{ color: '#474e65'}}
               label="CREATE QUIZ" />
           <Dialog
               title="Is Needed?"
               actions={[  
                 <RaisedButton
                   label="Close"
-                  backgroundColor="#FC3868"
-                  className={s.btn}
+                  secondary={true}
+                  className={"quiz-btn"}
                   style={{ borderRadius: "20px" }}
                   buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
                   onTouchTap={this.handleClose}
-                  labelStyle={{ color: '#fff' }}
                   />
               ]}
               modal={false}

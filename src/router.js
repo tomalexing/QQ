@@ -31,6 +31,7 @@ function decodeParam(val) {
 //   matchURI({ path: '/posts/:id' }, '/dummy') => null
 //   matchURI({ path: '/posts/:id' }, '/posts/123') => { id: 123 }
 function matchURI(route, path) {
+  
   const match = route.pattern.exec(path);
 
   if (!match) {
@@ -51,7 +52,6 @@ function matchURI(route, path) {
 function resolve(routes, context) {
   for (const route of routes) {
     const params = matchURI(route, context.error ? '/error' : context.pathname);
-
     if (!params) {
       continue;
     }
@@ -78,7 +78,6 @@ function resolve(routes, context) {
         return <Page route={{ ...route, params }} error={context.error} {...props} />;
       });
     }
-
     return route.load().then(Page => <Page route={{ ...route, params }} error={context.error} />);
   }
 

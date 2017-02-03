@@ -13,7 +13,6 @@ import Link from '../Link';
 import firebase from 'firebase';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import cx from 'classnames';
-import s from '../Cart/cart.css'
 import myTheme from "./../../src/theme";
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -89,7 +88,14 @@ class Footer extends React.Component {
             
               <fieldset className="quiz-subscribe__cover__input">
                 <input id="subscribe" type="email" placeholder="Email" name="subscribe" />
-                <input type="submit" value="subscribe" />
+                <RaisedButton
+                  type="submit"
+                  label="subscribe"
+                  secondary={true}
+                  className={"quiz-btn quiz-submit"}
+                  style={{ borderRadius: "20px" }}
+                  buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
+                  />
               </fieldset>
           </form>
 
@@ -98,12 +104,11 @@ class Footer extends React.Component {
               actions={[  
                 <RaisedButton
                   label="Close"
-                  backgroundColor="#FC3868"
-                  className={s.btn}
+                  secondary={true}
+                  className={"quiz-btn"}
                   style={{ borderRadius: "20px" }}
                   buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
                   onTouchTap={this.handleClose}
-                  labelStyle={{ color: '#fff' }}
                   />
               ]}
               modal={false}

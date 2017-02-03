@@ -54,7 +54,7 @@ export default class Quest extends React.Component{
             }
             }
         return (
-            <Layout>
+            <Layout className={"quiz-container"}>
                 <Q className="mdl-layout__content" q={quizTest}/>
             </Layout>
         );

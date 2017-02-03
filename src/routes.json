@@ -2,10 +2,17 @@
   {
     "path": "/",
     "page": "./home",
-    "chunk": "main",
-    "data": {
-      "articles": "GET https://gist.githubusercontent.com/koistya/a32919e847531320675764e7308b796a/raw/articles.json"
-    }
+    "chunk": "main"
+  },
+    {
+    "path": "/quiz",
+    "page": "./home",
+    "chunk": "main"
+  },
+  {
+    "path": "/quiz/:id",
+    "page": "./quiz",
+    "chunk": "main"
   },
   {
     "path": "/error",

@@ -267,17 +267,13 @@ $quiz-red: #FC3868
 			cursor: pointer
 		svg
 			margin: -3px 10px 0 0
-		&:hover
-			box-shadow: 0 2px 20px rgba(0,0,0,.5)
-		&:active
-			box-shadow: 0 2px 20px rgba(0,0,0,.3)
+
 	
 	&-social__btn-tw
 		background: #009EF6
 	&-social__btn-fb
 		background: #3645AF
 	&-social__btn-all
-		background: #FC3868
 // FOOTER AREA - Subscription
 .quiz
 	&-subscribe
@@ -322,7 +318,8 @@ $quiz-red: #FC3868
 				&:focus
 					width: 160px
 					
-		input[type="submit"]
+		.quiz-submit
+			vertical-align: middle
 			background: $quiz-red
 			line-height: 35px
 			min-width: 131px

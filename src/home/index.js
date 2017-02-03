@@ -148,7 +148,7 @@ class HomePage extends React.Component {
       adaptiveHeight: true,
       speed: 500
     }
-
+    let that = this
     return (
       <Layout className={"quiz-container"}>
 
@@ -158,7 +158,6 @@ class HomePage extends React.Component {
               ?
               <SS {...sliderConfig} >{
                 Object.keys(this.state.quiz).map((q, index) => {
-                  window.that = this;
                   return <div data-index={index} key={index}><Cart key={q} quiz={{
                     question: this.state.quiz[q]['question'],
                     q1: Object.values(this.state.quiz[q]['answers'])[0],

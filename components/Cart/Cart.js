@@ -9,12 +9,9 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import s from './cart.css'
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import myTheme from "./../../src/theme"
 
-
-console.log(myTheme)
 class Cart extends React.Component {
 
     constructor(props) {
@@ -225,14 +222,6 @@ class Cart extends React.Component {
 
     }
 
-
-    componentDidMount() {
-
-    }
-
-    componentWillUnmount() {
-
-    }
     handleOpen = () => {
         this.setState({ open: true });
     }
@@ -258,7 +247,7 @@ class Cart extends React.Component {
         cookie.save(`cartIsChoosed-${this.props.quiz.cartId}`, this.state.cartIsChoosedLeft ? `Left` :
             this.state.cartIsChoosedRight ? `Right` : '', { path: '/' })
 
-        return (<div className="quiz-cart ">
+        return (<div className="quiz-cart " id={this.props.quiz.cartId}>
             <div className="quiz-cart__title ">
                 {question}
             </div>
@@ -281,7 +270,7 @@ class Cart extends React.Component {
                         </div>
                         <div className='quiz-cart__questions__inner-value'>{q1.value}</div>
                     </div>
-                    <img height="240" width="300" src={q1.srcImg} />
+                    <img height="240" width="300" src={`http://${window.location.host}/${q1.srcImg}`} />
                     <div className='quiz-cart__questions__inner-value'>{q1.value}</div>
                 </div>
                 <div className="quiz-cart__questions-between "> </div>
@@ -303,7 +292,7 @@ class Cart extends React.Component {
                         </div>
                         <div className='quiz-cart__questions__inner-value'>{q2.value}</div>
                     </div>
-                    <img height="240" width="300" src={q2.srcImg} />
+                    <img height="240" width="300" src={`http://${window.location.host}/${q2.srcImg}`} />
                     <div className='quiz-cart__questions__inner-value'>{q2.value}</div>
                 </div>
             </div>
@@ -329,12 +318,11 @@ class Cart extends React.Component {
                     <li className="quiz-social__btn quiz-social__btn-all">
                         <RaisedButton 
                             label="Share"
-                            backgroundColor="#FC3868"
-                            className={s.btn}
+                            className={"btn"}
                             style={{borderRadius: "20px"}}
                             buttonStyle={{borderRadius: "20px",zIndex: 1, overflow: 'hidden'}}
                             onTouchTap={this.handleOpen}
-                            labelStyle={{color:'#fff'}}
+                            secondary={true}
                             icon={
                                 <svg width="19px" height="20px" viewBox="28 11 19 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
                                     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(37.700000, 21.000000) scale(-1, 1) translate(-37.700000, -21.000000) translate(29.700000, 12.000000)">
@@ -354,13 +342,14 @@ class Cart extends React.Component {
                 title="Share"
                 actions={[   <RaisedButton
                                 label="Close"
-                                backgroundColor="#FC3868"
-                                className={s.btn}
+                                 secondary={true}
+                                className={"quiz-btn"}
                                 style={{borderRadius: "20px"}}
                                 buttonStyle={{borderRadius: "20px",zIndex: 1, overflow: 'hidden'}}
                                 onTouchTap={this.handleClose}
-                                labelStyle={{color:'#fff'}}
-                                />]  }
+                                 keyboardFocused={true}
+                                />
+                       ]}
                 modal={false}
                 open={this.state.open}
                 onRequestClose={this.handleClose}
