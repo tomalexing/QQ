@@ -6,56 +6,50 @@ import Layout from "./../../components/Layout"
 import firebase from "firebase";
 
 export default class Quiz extends React.Component {
+    get db() {
+         return firebase.database()
+    }
 
     constructor(props) {
         super(props)
         this.state = {
-            quiz: null,
-            id: this.props.route.params.id
+            id: this.props.route.params.id,
+            stateId: null,
+            quiz: null
         }
-      
+        
     }
-    componentWillReceiveProps(nP){
-         this.state = {
-            id: this.props.route.params.id
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log(nextProps.route.params.id)
+        if(typeof this.state.stateId && nextProps.route.params.id != this.state.stateId ){
+            this.state.id = nextProps.route.params.id;
         }
-        return true
-    }
-    shouldComponentUpdate(){
-        console.log(this.props.route.params.id)
-        return  false
-    }
-    
-    componentWillUpdate(){
-        const db = firebase.database()
-        db.ref(`quiz/${this.state.id}`).once("value").then((quiz) => {
+        return typeof this.state.stateId == null || nextProps.route.params.id != this.state.stateId
+    }   
+
+    renewQuiz(){
+        this.db.ref(`quiz/${this.state.id}`).once("value").then((quiz) => {
             return quiz.val();
         }).then((quiz, err) => {
             if (quiz) {
-                this.setState({ quiz: quiz });
+                console.log('step4')
+                this.setState({ quiz: quiz, stateId: this.props.route.params.id });
             }
             if (err) console.log(err);
-
         })
-         console.log('componentWillUpdate $1 -- $2',this.state.id, this.props.route.params.id)
     }
+
+    componentWillUpdate() {
+        this.renewQuiz()
+        console.log('componentWillUpdate $1 -- $2 ',this.state.id, this.props.route.params.id)
+    }
+
     componentWillMount() {
-        console.log("componentWillMount")
-        const db = firebase.database()
-        db.ref(`quiz/${this.state.id}`).once("value").then((quiz) => {
-              console.log('step1')
-            return quiz.val();
-        }).then((quiz, err) => {
-            if (quiz) {
-                 console.log('step2')
-                this.setState({ quiz: quiz });
-            }
-
-            if (err) console.log(err);
-
-        })
-          console.log('step0')
+        this.renewQuiz()
+        console.log('componentWillMount $1 -- $2 ',this.state.id, this.props.route.params.id)
     }
+
     getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -67,6 +61,7 @@ export default class Quiz extends React.Component {
     render() {
         let that = this;
         let color = this.getRandomColor();
+        
         return (
 
             <Layout>

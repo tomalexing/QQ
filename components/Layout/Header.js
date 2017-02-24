@@ -14,32 +14,34 @@ import Login from './Login';
 import Button from './../Button';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import MenuIcon from 'material-ui/svg-icons/navigation/apps';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import cx from 'classnames';
-import myTheme from "./../../src/theme";
+import myTheme, { customStyles } from "./../../src/theme";
 
-
+const {alterBtnStyle} =  customStyles
+ 
 class Header extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
       open: false
-    };
-    
+    }
   }
 
   handleOpen = () => {
-    this.setState({ open: true });
-  };
+    this.setState({ open: true })
+  }
 
   handleClose = () => {
-    this.setState({ open: false });
-  };
+    this.setState({ open: false })
+  }
 
   getChildContext() {
-    return { muiTheme: getMuiTheme(myTheme) };
+    return { muiTheme: getMuiTheme(myTheme) }
   }
 
   render() {
@@ -51,17 +53,16 @@ class Header extends React.Component {
             <img className="logo" src={`http://${ window.location.host}/img/quiz-logo.png`} />
           </Link>
           <div className="quiz-header__spacer"></div>
-           <RaisedButton
-            label="Toggle Drawer"
-            onTouchTap={this.props.handleToggle}
-          />
+          <IconButton onTouchTap={this.props.handleToggle}  >
+            <MenuIcon color={"#fff"}/> 
+          </IconButton>
           <RaisedButton
               className={cx('quiz-btn', 'quiz-header__create')}
-              style={{ borderRadius: "20px"}}
-              buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
+              style={alterBtnStyle.style}
+              buttonStyle={alterBtnStyle.buttonStyle}
               onTouchTap={this.handleOpen}
-              labelStyle={{ color: '#474e65', fontWeight: 600, fontSize: 15 }}
-              rippleStyle={{ color: '#474e65'}}
+              labelStyle={alterBtnStyle.labelStyle}
+            
               label="CREATE QUIZ" />
           <Dialog
               title="Is Needed?"
@@ -70,11 +71,12 @@ class Header extends React.Component {
                   label="Close"
                   secondary={true}
                   className={"quiz-btn"}
-                  style={{ borderRadius: "20px" }}
-                  buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
+                  style={alterBtnStyle.style}
+                  buttonStyle={alterBtnStyle.buttonStyle}
                   onTouchTap={this.handleClose}
                   />
               ]}
+              
               modal={false}
               open={this.state.open}
               onRequestClose={this.handleClose}

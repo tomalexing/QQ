@@ -20,9 +20,39 @@ $quiz-red: #FC3868
 		padding: 0 16px
 	
 .mdl-layout__content
-    display: flex
-    flex-direction: column
+	display: flex
+	flex-direction: column
 
+.quiz-sidebar
+	&__close
+		position: absolute !important
+		right: 5px
+		top: 5px
+	&__title
+		text-align: center
+		color: #616161
+		border-bottom: 1px solid #E0E0E0
+	&__item a
+		display: block
+		text-decoration: none
+		color: rgb(71, 78, 101)
+		text-overflow: ellipsis
+		overflow: hidden
+		padding-right: 42px
+		border-bottom: 1px solid #E0E0E0
+	&__votes
+		background: grey
+		border-radius: 5px
+		padding: .1em
+		font-size: 11px
+		color: white
+		vertical-align: middle
+		line-height: 1.2em
+		position: absolute
+		right: 8px
+		top: 16px
+		small
+			margin: 3px
 
 // SLIDER 
 .slick-list

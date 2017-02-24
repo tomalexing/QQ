@@ -14,7 +14,7 @@ import Header from './Header';
 import Footer from '../Footer';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import IconButton from 'material-ui/IconButton';
 import Close from 'material-ui/svg-icons/navigation/close';
 import firebase from 'firebase';
 import Link from '../Link';
@@ -31,6 +31,7 @@ class Layout extends React.Component {
     super(props);
     this.state = { open: false };
   }
+
   componentDidMount() {
 
 
@@ -59,22 +60,42 @@ class Layout extends React.Component {
   }
 
   render() {
+
     return (
       <div className="mdl-layout mdl-js-layout quiz-out" ref={node => (this.root = node)}>
         <div className="mdl-layout__inner-container">
-          <Header handleToggle={this.handleToggle} />
-          <Drawer docked={false} open={this.state.open}>
-            <FloatingActionButton onTouchTap={this.handleToggle}>
+          <Header handleToggle={this.handleToggle}/>
+          <Drawer 
+
+            docked={false}
+            open={this.state.open}
+            onRequestChange={(open) => this.setState({open})}
+            className="quiz-sidebar"
+          >
+            <h2 className={"quiz-sidebar__title"}>All VS</h2>
+            <IconButton className={"quiz-sidebar__close"} onTouchTap={this.handleToggle}>
               <Close />
-            </FloatingActionButton>
+            </IconButton>
             {
               this.state.quiz
                 ?
+                
                 Object.keys(this.state.quiz).map((q, index) => {
-                  return <MenuItem key={index}>
-                            <Link to={`/quiz/${q}`}> 
+                  return <MenuItem key={index} className={'quiz-sidebar__item'}>
+                            <Link to={`/quiz/${q}`} onClick={this.handleToggle}> 
+                              { <span className={'quiz-sidebar__votes'}>{
+                                  Object.values(this.state.quiz[q]['answers'])[0].quantity +  
+                                  Object.values(this.state.quiz[q]['answers'])[1].quantity 
+                                  }
+                                  { <small>votes</small> 
+                                }</span> 
+                              }
+                              { 
+                                Object.values(this.state.quiz[q]['answers'])[0].value 
+                              }
+                              { <i> vs </i> }
                               {
-                                `${Object.values(this.state.quiz[q]['answers'])[0].value} vs ${Object.values(this.state.quiz[q]['answers'])[1].value}` 
+                                Object.values(this.state.quiz[q]['answers'])[1].value
                               }
                             </Link> 
                           </MenuItem>
@@ -84,7 +105,7 @@ class Layout extends React.Component {
             }
           </Drawer>
           <main className="mdl-layout__content">
-            <div {...this.props} className={cx(this.props.className)} />
+            <div {...this.props}  className={cx(this.props.className)} />
             <Footer />
           </main>
         </div>

@@ -2,7 +2,7 @@ import {
     cyan500, cyan700,
     pinkA200,
     grey100, grey300, grey400, grey500,
-    white, darkBlack, fullBlack,
+    white, darkBlack, fullBlack, indigo50
 } from 'material-ui/styles/colors';
 import { fade, darken } from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
@@ -49,3 +49,21 @@ export default {
         color: "#000"
     },
 };
+export const customStyles ={
+
+    alterBtnStyle : { 
+        labelStyle:{ 
+            color: '#474e65', 
+            fontWeight: 600, 
+            fontSize: 15 
+        },
+        buttonStyle: { 
+            borderRadius: "20px", 
+            zIndex: 1, 
+            overflow: 'hidden' 
+        },
+        style: {
+            borderRadius: "20px", 
+        }
+    }
+}
