@@ -9,11 +9,11 @@
  */
 
 import { createStore, applyMiddleware } from 'redux';
-import firebase from 'firebase';
+import thunk from 'redux-thunk';
 
 // Centralized application state
 // For more information visit http://redux.js.org/
-const initialState = { user: {}, loaded : 0 };
+const initialState = { user: {}, loaded : 0, quiz : {} };
 
 const store = createStore((state = initialState, action) => {
   // TODO: Add action handlers (aka "reducers")
@@ -24,31 +24,29 @@ const store = createStore((state = initialState, action) => {
       return { ...state, user: {}  };
     case 'LOADED' :
       return { ...state, loaded: (state.loaded) + 1  };
+    case 'QUIZ_LOADED' :
+      return { ...state, quiz: [...state.quiz, action.quiz ]};
+    case 'QUIZ_NOT_LOADED' :
+      return { ...state, quiz: {...state.quiz}};
     default:
       return state;
   }
-}, initialState, applyMiddleware(getQuizFromFirebase));
+}, applyMiddleware(...[thunk, logger ]));
 
 
-function getQuizFromFirebase({ getState }) {
-
-  const dbRef = firebase.database().ref()
-
+function logger({ getState }) {
   return (next) => (action) => {
+    console.log('will dispatch', action)
+    // Call the next dispatch method in the middleware chain.
+    let returnValue = next(action)
+    
+    console.log('state after dispatch', getState())
 
-    dbRef.child('quiz').limitToLast(10).once("value").then((quiz) => {
-      return quiz.val();
-    }).then((quiz, err) => {
-      if (quiz) {
-        let returnValue = next(action)
-        console.log(returnValue)
-        return  { quiz: quiz };
-
-      }
-
-      if (err) return undefined;
-    })
+    // This will likely be the action itself, unless
+    // a middleware further in chain changed it.
+    return returnValue
   }
 }
+
 
 export default store;

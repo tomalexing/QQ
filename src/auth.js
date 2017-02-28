@@ -1,6 +1,7 @@
-import firebase from "firebase";
+import firebase from "firebase"
 import config from "./config"
 import store from "./store"
+import {autorized, noAutorized} from "./actionCreators"
 
 firebase.initializeApp(config);
 
@@ -8,16 +9,11 @@ firebase.initializeApp(config);
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
-    store.dispatch({
-      type: 'AUTHORIZE',
-      user
-    });
+    store.dispatch(autorized(user));
 
   } else {
     // User is signed out.
-    store.dispatch({
-      type: 'NOT_AUTHORIZE'
-    });
+    store.dispatch(noAutorized());
   }
 
 });

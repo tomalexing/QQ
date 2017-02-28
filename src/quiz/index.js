@@ -1,11 +1,13 @@
-
-
 import React from 'react';
 import Cart from './../../components/Cart'
 import Layout from "./../../components/Layout"
-import firebase from "firebase";
-import Link from './../../components/Link'
-export default class Quiz extends React.Component {
+import firebase from "firebase"
+import { getQuizAll, getQuizByID } from "./../middleware"
+import store from "./../store"
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
+class Quiz extends React.Component {
     get db() {
          return firebase.database()
     }
@@ -40,14 +42,15 @@ export default class Quiz extends React.Component {
         })
     }
 
-    componentWillUpdate() {
-        this.renewQuiz()
-        console.log('componentWillUpdate $1 -- $2 ',this.state.id, this.props.route.params.id)
+    componentWillUpdate(){
+         console.log('componentWillUpdate $1 -- $2 ',this.state.id, this.props.route.params.id)
     }
 
     componentWillMount() {
-        this.renewQuiz()
-        console.log('componentWillMount $1 -- $2 ',this.state.id, this.props.route.params.id)
+        let { dispatch, getQuizByID } = this.props;
+        getQuizByID(this.state.id).then(
+             q =>  console.log('componentWillMount $1 -- $2 ',this.state.id, this.props.route.params.id)
+        )
     }
 
     getRandomColor() {
@@ -69,20 +72,17 @@ export default class Quiz extends React.Component {
                 {
                     (this.state.quiz)
                         ?
-                        <div>
-                            <Cart quiz={{
-                                question: this.state.quiz['question'],
-                                q1: Object.values(this.state.quiz['answers'])[0],
-                                q2: Object.values(this.state.quiz['answers'])[1],
-                                cartId: this.props.route.params.id,
-                                leftCartUID: Object.entries(that.state.quiz['answers'])[0][0],
-                                rightCartUID: Object.entries(that.state.quiz['answers'])[1][0]
-                            }} />
-                            <Link to={'/quiz'}> Next </Link>
-                        </div>
+                        <Cart quiz={{
+                            question: this.state.quiz['question'],
+                            q1: Object.values(this.state.quiz['answers'])[0],
+                            q2: Object.values(this.state.quiz['answers'])[1],
+                            cartId: this.props.route.params.id,
+                            leftCartUID: Object.entries(that.state.quiz['answers'])[0][0],
+                            rightCartUID: Object.entries(that.state.quiz['answers'])[1][0]
+                        }} />
                         :
                         <div className="preloading__cart">
-                            <p>Quiz Is Loading!!!</p>
+                            <p>Quiz Is Starting!!!</p>
                             <p>Pick That You Like More</p>
                         </div>
                 }
@@ -92,3 +92,17 @@ export default class Quiz extends React.Component {
 
 
 }
+
+
+function mapStateToProps(state) {
+  return { quiz: state.quiz }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getQuizByID: bindActionCreators(getQuizByID, dispatch),
+    
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Quiz)
