@@ -4,7 +4,7 @@ import React from 'react';
 import Cart from './../../components/Cart'
 import Layout from "./../../components/Layout"
 import firebase from "firebase";
-
+import Link from './../../components/Link'
 export default class Quiz extends React.Component {
     get db() {
          return firebase.database()
@@ -69,17 +69,20 @@ export default class Quiz extends React.Component {
                 {
                     (this.state.quiz)
                         ?
-                        <Cart quiz={{
-                            question: this.state.quiz['question'],
-                            q1: Object.values(this.state.quiz['answers'])[0],
-                            q2: Object.values(this.state.quiz['answers'])[1],
-                            cartId: this.props.route.params.id,
-                            leftCartUID: Object.entries(that.state.quiz['answers'])[0][0],
-                            rightCartUID: Object.entries(that.state.quiz['answers'])[1][0]
-                        }} />
+                        <div>
+                            <Cart quiz={{
+                                question: this.state.quiz['question'],
+                                q1: Object.values(this.state.quiz['answers'])[0],
+                                q2: Object.values(this.state.quiz['answers'])[1],
+                                cartId: this.props.route.params.id,
+                                leftCartUID: Object.entries(that.state.quiz['answers'])[0][0],
+                                rightCartUID: Object.entries(that.state.quiz['answers'])[1][0]
+                            }} />
+                            <Link to={'/quiz'}> Next </Link>
+                        </div>
                         :
                         <div className="preloading__cart">
-                            <p>Quiz Is Starting!!!</p>
+                            <p>Quiz Is Loading!!!</p>
                             <p>Pick That You Like More</p>
                         </div>
                 }

@@ -8,7 +8,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import firebase from 'firebase';
 
 // Centralized application state
 // For more information visit http://redux.js.org/
@@ -26,6 +27,28 @@ const store = createStore((state = initialState, action) => {
     default:
       return state;
   }
-});
+}, initialState, applyMiddleware(getQuizFromFirebase));
+
+
+function getQuizFromFirebase({ getState }) {
+
+  const dbRef = firebase.database().ref()
+
+  return (next) => (action) => {
+
+    dbRef.child('quiz').limitToLast(10).once("value").then((quiz) => {
+      return quiz.val();
+    }).then((quiz, err) => {
+      if (quiz) {
+        let returnValue = next(action)
+        console.log(returnValue)
+        return  { quiz: quiz };
+
+      }
+
+      if (err) return undefined;
+    })
+  }
+}
 
 export default store;
