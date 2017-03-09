@@ -1,59 +1,50 @@
+
+
 import React from 'react';
 import Cart from './../../components/Cart'
 import Layout from "./../../components/Layout"
-import firebase from "firebase"
-import {getQuizByID } from "./../actionCreators"
-import store from "./../store"
+import Link from './../../components/Link'
 import { connect } from 'react-redux'
+import { getQuizByID, clearStore } from './../actionCreators'
 
 class Quiz extends React.Component {
-    get db() {
-         return firebase.database()
-    }
-
     constructor(props) {
         super(props)
         this.state = {
             id: this.props.route.params.id,
-            stateId: null,
             quiz: null
         }
         
     }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log(nextProps.route.params.id)
-        if(typeof this.state.stateId && nextProps.route.params.id != this.state.stateId ){
-            this.state.id = nextProps.route.params.id;
+    componentWillReceiveProps(nextProps){
+        this.state = {
+            id: nextProps.route.params.id,
+            quiz: nextProps.quizs[`${nextProps.route.params.id}`] || null
         }
-        return typeof this.state.stateId == null || nextProps.route.params.id != this.state.stateId
-    }   
-
-    renewQuiz(){
-        this.db.ref(`quiz/${this.state.id}`).once("value").then((quiz) => {
-            return quiz.val();
-        }).then((quiz, err) => {
-            if (quiz) {
-                console.log('step4')
-                this.setState({ quiz: quiz, stateId: this.props.route.params.id });
-            }
-            if (err) console.log(err);
-        })
     }
 
-    componentWillUpdate(){
-        let { getQuizByID } = this.props;
-        
-         console.log('componentWillUpdate $1 -- $2 ',this.state.id, this.props.route.params.id)
+    shouldComponentUpdate(nextProps, nextState) {
+
+        return true;
+    }   
+
+
+    componentWillUpdate() {
+        let {getQuizByID} = this.props;
+        if( !this.state.quiz )
+            getQuizByID(this.state.id);
+        console.log('componentWillUpdate $1 -- $2 ',this.state.id, this.props.route.params.id)
     }
 
     componentWillMount() {
-        let { getQuizByID } = this.props;
-        getQuizByID(this.state.id)
-        console.log('componentWillMount $1 state -- $2 props',this.state, this.props)
-        
+        let {getQuizByID} = this.props;
+        getQuizByID(this.state.id);
+        console.log('componentWillMount $1 -- $2 ',this.state, this.props)
     }
-
+    componentWillUnmount(){
+        let {clearStore } = this.props;
+        clearStore();
+    }
     getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -65,25 +56,27 @@ class Quiz extends React.Component {
     render() {
         let that = this;
         let color = this.getRandomColor();
-        let loaded = this.props.quiz && this.props.quiz[`${this.props.route.params.id}`]
         return (
 
             <Layout>
                 <div style={{background: color}}>{color}</div>
                 {
-                    (loaded)
+                    (this.state.quiz)
                         ?
-                        <Cart quiz={{
-                            question: this.props.quiz[`${this.props.route.params.id}`]['question'],
-                            q1: Object.values(this.props.quiz[`${this.props.route.params.id}`]['answers'])[0],
-                            q2: Object.values(this.props.quiz[`${this.props.route.params.id}`]['answers'])[1],
-                            cartId: this.props.route.params.id,
-                            leftCartUID: Object.entries(this.props.quiz[`${this.props.route.params.id}`]['answers'])[0][0],
-                            rightCartUID: Object.entries(this.props.quiz[`${this.props.route.params.id}`]['answers'])[1][0]
-                        }} />
+                        <div>
+                            <Cart quiz={{
+                                question: this.state.quiz['question'],
+                                q1: Object.values(this.state.quiz['answers'])[0],
+                                q2: Object.values(this.state.quiz['answers'])[1],
+                                cartId: this.props.route.params.id,
+                                leftCartUID: Object.entries(that.state.quiz['answers'])[0][0],
+                                rightCartUID: Object.entries(that.state.quiz['answers'])[1][0]
+                            }} />
+                            <Link to={`/quiz/${'-KaJ0ieqwWworeX91WD-'}`}> Next </Link>
+                        </div>
                         :
                         <div className="preloading__cart">
-                            <p>Quiz Is Starting!!!</p>
+                            <p>Quiz Is Loading!!!</p>
                             <p>Pick That You Like More</p>
                         </div>
                 }
@@ -93,10 +86,9 @@ class Quiz extends React.Component {
 
 
 }
+  
 
 export default connect(
-    (state) => {    // mapStateToProps
-        return { quiz: state.quiz }
-    },
-    { getQuizByID })  // mapDispatchToProps
-(Quiz)
+    state => ({quizs: state.quiz}),
+    {getQuizByID, clearStore}
+)(Quiz)

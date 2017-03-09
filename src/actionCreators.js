@@ -4,7 +4,9 @@ export const AUTHORIZE          = 'AUTHORIZE'
 export const NOT_AUTHORIZE      = 'NOT_AUTHORIZE'
 export const QUIZ_LOADED        = 'QUIZ_LOADED'
 export const QUIZ_NOT_LOADED    = 'QUIZ_NOT_LOADED'
-
+export const CLEAR_STORE        = 'CLEAR_STORE'
+export const QUIZ_LOADED_BY_ID  = 'QUIZ_LOADED_BY_ID'
+export const QUIZ_LOADED_ALL    = 'QUIZ_LOADED_ALL'
 
 export function autorized(user){
     return{
@@ -20,8 +22,10 @@ export function noAutorized(){
 }
 
 export function quizLoaded(quiz){
+   
+  
     return{
-      type: QUIZ_LOADED,
+      type: QUIZ_LOADED_ALL,
       quiz
     }
 }
@@ -32,9 +36,15 @@ export function quizNotLoaded(){
     }
 }
 
+export function clearStore(){
+    return{
+      type: CLEAR_STORE
+    }
+}
+
 export function quizLoadedByID(quiz, id){
     return {
-      type: QUIZ_LOADED,
+      type: QUIZ_LOADED_BY_ID,
       payload: {
           quiz,
           id
@@ -49,7 +59,7 @@ export function quizNotLoadedByID(){
 }
 
 
-export function getQuizAll(number) {
+export function getQuizAll(number = 10) {
 
   // Invert control!
   // Return a function that accepts `dispatch` so we can dispatch later.
@@ -76,7 +86,12 @@ export function getQuizByID(id) {
   // Return a function that accepts `dispatch` so we can dispatch later.
   // Thunk middleware knows how to turn thunk async actions into actions.
 
+
   return dispatch => {
+
+            if(!id)
+              dispatch (quizNotLoadedByID())
+
             firebase.database()
               .ref(`quiz/${id}`)
               .once("value")

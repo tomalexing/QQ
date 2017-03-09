@@ -8,19 +8,21 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React, { PropTypes } from 'react';
-import cx from 'classnames';
-import Header from './Header';
-import Footer from '../Footer';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import Close from 'material-ui/svg-icons/navigation/close';
-import firebase from 'firebase';
-import Link from '../Link';
+import React, { PropTypes } from 'react'
+import cx from 'classnames'
+import Header from './Header'
+import Footer from '../Footer'
+import Drawer from 'material-ui/Drawer'
+import MenuItem from 'material-ui/MenuItem'
+import IconButton from 'material-ui/IconButton'
+import Close from 'material-ui/svg-icons/navigation/close'
+import Link from '../Link'
 
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import myTheme from "./../../src/theme";
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import myTheme from "./../../src/theme"
+import { connect } from 'react-redux'
+import {getQuizAll, clearStore } from "./../../src/actionCreators" 
+
 class Layout extends React.Component {
 
   static propTypes = {
@@ -29,29 +31,34 @@ class Layout extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = { 
+      open: false,
+      quizs: null 
+    };
   }
 
   componentDidMount() {
 
 
   }
+  componentWillReceiveProps(nextProps){
+    this.state = {
+       quizs: nextProps.quizs
+     }
+  }
 
+  componentWillUpdate() {
+     let {getQuizAll} = this.props;
+     if( !this.state.quizs )
+       getQuizAll(15)
+
+     
+  }
   componentWillMount() {
 
-    const dbRef = firebase.database().ref()
-    let quizObj = {};
-    dbRef.child('quiz').limitToLast(10).once("value").then((quiz) => {
-      return quiz.val();
-    }).then((quiz, err) => {
-      if (quiz) {
-        this.setState({ quiz: quiz });
-      }
+    let {getQuizAll } = this.props;
 
-      if (err) console.error(err);
-
-    })
-
+    getQuizAll(10);
 
   }
   handleToggle = () => this.setState({ open: !this.state.open });
@@ -77,25 +84,25 @@ class Layout extends React.Component {
               <Close />
             </IconButton>
             {
-              this.state.quiz
+              this.state.quizs
                 ?
                 
-                Object.keys(this.state.quiz).map((q, index) => {
+                Object.keys(this.state.quizs).map((q, index) => {
                   return <MenuItem key={index} className={'quiz-sidebar__item'}>
                             <Link to={`/quiz/${q}`} onClick={this.handleToggle}> 
                               { <span className={'quiz-sidebar__votes'}>{
-                                  Object.values(this.state.quiz[q]['answers'])[0].quantity +  
-                                  Object.values(this.state.quiz[q]['answers'])[1].quantity 
+                                  Object.values(this.state.quizs[q]['answers'])[0].quantity +  
+                                  Object.values(this.state.quizs[q]['answers'])[1].quantity 
                                   }
                                   { <small>votes</small> 
                                 }</span> 
                               }
                               { 
-                                Object.values(this.state.quiz[q]['answers'])[0].value 
+                                Object.values(this.state.quizs[q]['answers'])[0].value 
                               }
                               { <i> vs </i> }
                               {
-                                Object.values(this.state.quiz[q]['answers'])[1].value
+                                Object.values(this.state.quizs[q]['answers'])[1].value
                               }
                             </Link> 
                           </MenuItem>
@@ -117,4 +124,7 @@ class Layout extends React.Component {
 Layout.childContextTypes = {
   muiTheme: React.PropTypes.object.isRequired,
 };
-export default Layout;
+export default connect(
+    state => ({quizs: state.quiz}),
+    {getQuizAll, clearStore}
+)(Layout)

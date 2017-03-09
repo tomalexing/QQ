@@ -10,7 +10,10 @@
 
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { AUTHORIZE, NOT_AUTHORIZE, QUIZ_LOADED, QUIZ_NOT_LOADED }  from './actionCreators'
+import { AUTHORIZE, NOT_AUTHORIZE, QUIZ_LOADED, 
+  QUIZ_NOT_LOADED, QUIZ_LOADED_BY_ID,
+  QUIZ_LOADED_ALL,
+   CLEAR_STORE }  from './actionCreators'
 
 // Centralized application state
 // For more information visit http://redux.js.org/
@@ -24,10 +27,14 @@ const store = createStore((state = initialState, action) => {
       return { ...state, user: action.user  };
     case NOT_AUTHORIZE :
       return { ...state, user: {}  };
-    case QUIZ_LOADED :
+    case QUIZ_LOADED_BY_ID :
       return { ...state, quiz: Object.assign({}, state.quiz, { [`${action.payload.id}`] : action.payload.quiz}  ) };
+    case QUIZ_LOADED_ALL :
+    return { ...state, quiz:  action.quiz };
     case QUIZ_NOT_LOADED :
       return { ...state, quiz: {...state.quiz}};
+    case CLEAR_STORE :
+      return { ...state, quiz: {}};
     default:
       return state;
   }
