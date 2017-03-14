@@ -16,12 +16,14 @@ import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import Close from 'material-ui/svg-icons/navigation/close'
+import firebase from 'firebase'
 import Link from '../Link'
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import myTheme from "./../../src/theme"
+
+import { getQuizAll } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
-import {getQuizAll, clearStore } from "./../../src/actionCreators" 
 
 class Layout extends React.Component {
 
@@ -33,7 +35,7 @@ class Layout extends React.Component {
     super(props);
     this.state = { 
       open: false,
-      quizs: null 
+      quiz: null
     };
   }
 
@@ -43,23 +45,13 @@ class Layout extends React.Component {
   }
   componentWillReceiveProps(nextProps){
     this.state = {
-       quizs: nextProps.quizs
-     }
-  }
+        quiz: nextProps.quizs || null
+    }
+    }
 
-  componentWillUpdate() {
-     let {getQuizAll} = this.props;
-     if( !this.state.quizs )
-       getQuizAll(15)
-
-     
-  }
   componentWillMount() {
-
-    let {getQuizAll } = this.props;
-
-    getQuizAll(10);
-
+    let { getQuizAll } = this.props;
+    getQuizAll();
   }
   handleToggle = () => this.setState({ open: !this.state.open });
   getChildContext() {
@@ -84,25 +76,25 @@ class Layout extends React.Component {
               <Close />
             </IconButton>
             {
-              this.state.quizs
+              this.state.quiz
                 ?
                 
-                Object.keys(this.state.quizs).map((q, index) => {
+                Object.keys(this.state.quiz).map((q, index) => {
                   return <MenuItem key={index} className={'quiz-sidebar__item'}>
                             <Link to={`/quiz/${q}`} onClick={this.handleToggle}> 
                               { <span className={'quiz-sidebar__votes'}>{
-                                  Object.values(this.state.quizs[q]['answers'])[0].quantity +  
-                                  Object.values(this.state.quizs[q]['answers'])[1].quantity 
+                                  Object.values(this.state.quiz[q]['answers'])[0].quantity +  
+                                  Object.values(this.state.quiz[q]['answers'])[1].quantity 
                                   }
                                   { <small>votes</small> 
                                 }</span> 
                               }
-                              { 
-                                Object.values(this.state.quizs[q]['answers'])[0].value 
+                              {
+                                Object.values(this.state.quiz[q]['answers'])[0].value 
                               }
                               { <i> vs </i> }
                               {
-                                Object.values(this.state.quizs[q]['answers'])[1].value
+                                Object.values(this.state.quiz[q]['answers'])[1].value
                               }
                             </Link> 
                           </MenuItem>
@@ -120,11 +112,12 @@ class Layout extends React.Component {
 
     );
   }
-}
+} 
 Layout.childContextTypes = {
   muiTheme: React.PropTypes.object.isRequired,
 };
-export default connect(
-    state => ({quizs: state.quiz}),
-    {getQuizAll, clearStore}
-)(Layout)
+export default 
+connect(
+  state => ({quizs: state.quiz}),
+  {getQuizAll}
+)(Layout);

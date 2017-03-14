@@ -14,14 +14,16 @@ import { title, html } from './index.md';
 import Button from '../../components/Button';
 import Link from '../../components/Link';
 import Cart from "../../components/Cart";
+
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FontIcon from 'material-ui/FontIcon';
+
 import firebase from "firebase";
 import SS from "react-slick";
 import store from "./../store"
-import FontIcon from 'material-ui/FontIcon';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { addClass, removeClass } from "./../helper";
 import myTheme from "./../theme"
-import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 class HomePage extends React.Component {
 
@@ -148,7 +150,7 @@ class HomePage extends React.Component {
       adaptiveHeight: true,
       speed: 500
     }
-    let that = this
+    let that = this;
     return (
       <Layout className={"quiz-container"}>
 

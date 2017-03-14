@@ -4,9 +4,16 @@ import React from 'react';
 import Cart from './../../components/Cart'
 import Layout from "./../../components/Layout"
 import Link from './../../components/Link'
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 import { connect } from 'react-redux'
 import { getQuizByID, clearStore } from './../actionCreators'
+import myTheme, { customStyles } from "./../theme";
 
+ 
 class Quiz extends React.Component {
     constructor(props) {
         super(props)
@@ -23,11 +30,17 @@ class Quiz extends React.Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    getNextAndPrevIDs(id) { 
+        let {quizs} = this.props;
+        if ( !Object.entries(quizs).length ) return {prev: null, next: null};
+        let Ids;
+        Object.entries(quizs).map(q=>q[0]).reduce((prev, cur, ind, arr) => { 
+            if(prev === id)  {Ids = { prev: null , next: arr[ind] || null } }
+            if(cur && cur === id) { Ids = { prev: arr[ind-1] || null , next: arr[ind+1] || null } 
 
-        return true;
-    }   
-
+        }});
+        return Ids || {prev: null, next: null}
+    }
 
     componentWillUpdate() {
         let {getQuizByID} = this.props;
@@ -41,10 +54,7 @@ class Quiz extends React.Component {
         getQuizByID(this.state.id);
         console.log('componentWillMount $1 -- $2 ',this.state, this.props)
     }
-    componentWillUnmount(){
-        let {clearStore } = this.props;
-        clearStore();
-    }
+
     getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -53,17 +63,25 @@ class Quiz extends React.Component {
         }
         return color;
     }
+    getChildContext() {
+        return { muiTheme: getMuiTheme(myTheme) }
+    }
+
     render() {
         let that = this;
         let color = this.getRandomColor();
+        let {prev, next} = this.getNextAndPrevIDs(that.state.id);
+        const style = {
+        marginRight: 20,
+        };
         return (
 
-            <Layout>
+            <Layout  className={"quiz-container"}>
                 <div style={{background: color}}>{color}</div>
                 {
                     (this.state.quiz)
                         ?
-                        <div>
+                        <div className={'quiz'}>
                             <Cart quiz={{
                                 question: this.state.quiz['question'],
                                 q1: Object.values(this.state.quiz['answers'])[0],
@@ -72,7 +90,16 @@ class Quiz extends React.Component {
                                 leftCartUID: Object.entries(that.state.quiz['answers'])[0][0],
                                 rightCartUID: Object.entries(that.state.quiz['answers'])[1][0]
                             }} />
-                            <Link to={`/quiz/${'-KaJ0ieqwWworeX91WD-'}`}> Next </Link>
+                            {(prev)?<div className={'quiz-btn__prev'}><Link to={`/quiz/${prev}`}> <FloatingActionButton 
+                                backgroundColor="hsla(0,0%,100%,.5)">
+                                <FontIcon color="#fff"  className="material-icons" >keyboard_arrow_left</FontIcon>
+                                </FloatingActionButton></Link></div>
+                                :""}
+                            {(next)?<div className={'quiz-btn__next'}><Link to={`/quiz/${next}`}> <FloatingActionButton 
+                                backgroundColor="hsla(0,0%,100%,.5)" >
+                                <FontIcon color="#fff"  className="material-icons"  >keyboard_arrow_right</FontIcon>
+                                </FloatingActionButton></Link></div>
+                                :""}
                         </div>
                         :
                         <div className="preloading__cart">
@@ -86,7 +113,9 @@ class Quiz extends React.Component {
 
 
 }
-  
+Quiz.childContextTypes = {
+  muiTheme: React.PropTypes.object.isRequired,
+};  
 
 export default connect(
     state => ({quizs: state.quiz}),

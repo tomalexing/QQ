@@ -8,6 +8,9 @@ export const CLEAR_STORE        = 'CLEAR_STORE'
 export const QUIZ_LOADED_BY_ID  = 'QUIZ_LOADED_BY_ID'
 export const QUIZ_LOADED_ALL    = 'QUIZ_LOADED_ALL'
 
+let lastDownloadedQuiz = null;
+
+
 export function autorized(user){
     return{
       type: AUTHORIZE,
@@ -22,8 +25,12 @@ export function noAutorized(){
 }
 
 export function quizLoaded(quiz){
-   
   
+   if(quiz){
+    let quizArray = Object.entries(quiz)
+    lastDownloadedQuiz = quizArray[ quizArray.length - 1 ][0];
+   }
+
     return{
       type: QUIZ_LOADED_ALL,
       quiz
@@ -70,11 +77,12 @@ export function getQuizAll(number = 10) {
     return   firebase.database()
                 .ref()
                 .child('quiz')
-                .limitToLast(number)
+                .limitToFirst(100)
+                .startAt(lastDownloadedQuiz)
                 .once("value")
                 .then((quiz) => {return quiz.val()})
                 .then(
-                    quiz => dispatch( quizLoaded(quiz) ),
+                    quiz => { dispatch( quizLoaded(quiz))},
                     err =>  dispatch( quizNotLoaded() )
                 )
   }

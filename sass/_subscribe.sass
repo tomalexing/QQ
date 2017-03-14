@@ -1,0 +1,59 @@
+// FOOTER AREA - Subscription
+.quiz
+	&-subscribe
+		display: block
+	&-subscribe__label
+		display: inline-block
+		line-height: 35px
+		font-size: 15px
+		text-transform: uppercase
+		color: white 
+		padding-right: 20px
+	&-subscribe__cover__input
+		display: inline-block
+		border-radius: 40px
+		background-color: $quiz-bg
+		border: 1px solid rgba(255, 255, 255, .3)
+		line-height: 35px
+		+r(840)
+			margin-bottom: 20px
+		input[type="email"]
+			background: transparent
+			line-height: 35px
+			font-size: 18px
+			font-weight: 100
+			color: white !important
+			margin: 0 11px 0 20px
+			width: 160px
+			+tr(width .5s)
+			&:focus
+				width: 180px
+				opacity: .6
+			&::input-placeholder
+				color: rgba(255, 255, 255, .3)
+			&:focus::input-placeholder
+				color: rgba(255, 255, 255, .7)
+			&:-webkit-autofill
+				box-shadow: 0 0 0px 1000px $quiz-bg inset 
+				-webkit-text-fill-color: rgba(255, 255, 255, .5)
+			&:-webkit-autofill:focus
+				-webkit-text-fill-color: rgba(255, 255, 255, .7)
+			+r(840)
+				&:focus
+					width: 160px
+					
+		.quiz-submit
+			vertical-align: middle
+			background: $quiz-red
+			line-height: 35px
+			min-width: 131px
+			height: 40px
+			border-radius: 20px
+			margin: 4px
+			font-size: 16px
+			color: white
+			transition: box-shadow 0.5s
+			text-transform: uppercase
+			-webkit-appearance: none
+			&:hover
+				box-shadow: 0 2px 20px rgba(0,0,0,.5)  !important
