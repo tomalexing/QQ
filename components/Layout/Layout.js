@@ -22,7 +22,7 @@ import Link from '../Link'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import myTheme from "./../../src/theme"
 
-import { getQuizAll } from "./../../src/actionCreators"
+import { getQuizAll, getMeta } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
 
 class Layout extends React.Component {
@@ -44,15 +44,17 @@ class Layout extends React.Component {
 
   }
   componentWillReceiveProps(nextProps){
-    this.state = {
-        quiz: nextProps.quizs || null
-    }
-    }
+      this.state = {
+          quiz: nextProps.quizs || null
+      }
+  }
 
   componentWillMount() {
-    let { getQuizAll } = this.props;
+    let { getQuizAll, getMeta } = this.props;
     getQuizAll();
+    getMeta();
   }
+
   handleToggle = () => this.setState({ open: !this.state.open });
   getChildContext() {
     return { muiTheme: getMuiTheme(myTheme) };
@@ -119,5 +121,5 @@ Layout.childContextTypes = {
 export default 
 connect(
   state => ({quizs: state.quiz}),
-  {getQuizAll}
+  {getQuizAll, getMeta}
 )(Layout);

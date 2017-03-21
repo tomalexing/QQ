@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-
+import store from './store'
 export const AUTHORIZE          = 'AUTHORIZE'
 export const NOT_AUTHORIZE      = 'NOT_AUTHORIZE'
 export const QUIZ_LOADED        = 'QUIZ_LOADED'
@@ -7,8 +7,8 @@ export const QUIZ_NOT_LOADED    = 'QUIZ_NOT_LOADED'
 export const CLEAR_STORE        = 'CLEAR_STORE'
 export const QUIZ_LOADED_BY_ID  = 'QUIZ_LOADED_BY_ID'
 export const QUIZ_LOADED_ALL    = 'QUIZ_LOADED_ALL'
-
-let lastDownloadedQuiz = null;
+export const META_LOADED        = 'META_LOADED'
+let lastDownloadedQuiz = '-';
 
 
 export function autorized(user){
@@ -25,12 +25,14 @@ export function noAutorized(){
 }
 
 export function quizLoaded(quiz){
-  
+
    if(quiz){
+
     let quizArray = Object.entries(quiz)
     lastDownloadedQuiz = quizArray[ quizArray.length - 1 ][0];
-   }
 
+   }
+ 
     return{
       type: QUIZ_LOADED_ALL,
       quiz
@@ -50,6 +52,8 @@ export function clearStore(){
 }
 
 export function quizLoadedByID(quiz, id){
+    
+
     return {
       type: QUIZ_LOADED_BY_ID,
       payload: {
@@ -65,8 +69,17 @@ export function quizNotLoadedByID(){
     }
 }
 
+export function metaLoaded(meta){
+ 
+    return {
+      type: META_LOADED,
+      payload: {
+        meta
+      }
+    }
 
-export function getQuizAll(number = 10) {
+}
+export function getQuizAll(number = 2) {
 
   // Invert control!
   // Return a function that accepts `dispatch` so we can dispatch later.
@@ -77,7 +90,8 @@ export function getQuizAll(number = 10) {
     return   firebase.database()
                 .ref()
                 .child('quiz')
-                .limitToFirst(100)
+                .orderByKey()
+                .limitToFirst(number)
                 .startAt(lastDownloadedQuiz)
                 .once("value")
                 .then((quiz) => {return quiz.val()})
@@ -108,5 +122,17 @@ export function getQuizByID(id) {
                 quiz => dispatch( quizLoadedByID(quiz, id) ),
                 err =>  dispatch( quizNotLoadedByID() )
               )
+  }
+}
+
+
+export function getMeta(){
+
+  return dispatch => {
+            firebase.database()
+              .ref(`quiz-meta`)
+              .once("value")
+              .then(value => {console.log(value.val()); return value.val()})
+              .then(meta => dispatch( metaLoaded(meta) ))
   }
 }

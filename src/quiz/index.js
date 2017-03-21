@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { connect } from 'react-redux'
-import { getQuizByID, clearStore } from './../actionCreators'
+import { getQuizByID, clearStore, getQuizAll } from './../actionCreators'
 import myTheme, { customStyles } from "./../theme";
 
  
@@ -28,11 +28,14 @@ class Quiz extends React.Component {
             id: nextProps.route.params.id,
             quiz: nextProps.quizs[`${nextProps.route.params.id}`] || null
         }
+        getQuizByID(this.state.quiz.next);
+        getQuizByID(this.state.quiz.prev);
     }
 
     getNextAndPrevIDs(id) { 
-        let {quizs} = this.props;
-        if ( !Object.entries(quizs).length ) return {prev: null, next: null};
+        let {quizs, getQuizAll, getQuizByID} = this.props;
+        if ( !Object.entries(quizs).length ) { return {prev: null, next: null}};
+     
         let Ids;
         Object.entries(quizs).map(q=>q[0]).reduce((prev, cur, ind, arr) => { 
             if(prev === id)  {Ids = { prev: null , next: arr[ind] || null } }
@@ -42,17 +45,15 @@ class Quiz extends React.Component {
         return Ids || {prev: null, next: null}
     }
 
-    componentWillUpdate() {
+    componentWillUpdate(){
         let {getQuizByID} = this.props;
         if( !this.state.quiz )
             getQuizByID(this.state.id);
-        console.log('componentWillUpdate $1 -- $2 ',this.state.id, this.props.route.params.id)
     }
 
     componentWillMount() {
         let {getQuizByID} = this.props;
         getQuizByID(this.state.id);
-        console.log('componentWillMount $1 -- $2 ',this.state, this.props)
     }
 
     getRandomColor() {
@@ -119,5 +120,5 @@ Quiz.childContextTypes = {
 
 export default connect(
     state => ({quizs: state.quiz}),
-    {getQuizByID, clearStore}
+    {getQuizByID, clearStore, getQuizAll}
 )(Quiz)
