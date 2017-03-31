@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import Cart from './../../components/Cart'
 import Layout from "./../../components/Layout"
@@ -73,7 +71,7 @@ class Quiz extends React.Component {
         let color = this.getRandomColor();
         let {prev, next} = this.getNextAndPrevIDs(that.state.id);
         const style = {
-        marginRight: 20,
+            marginRight: 20,
         };
         return (
 

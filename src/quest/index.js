@@ -17,7 +17,7 @@ export default class Quest extends React.Component{
         var quizTest = {
             'cartQuest': {
                 question: "хороший",
-                 cartId: '-KPs0qRtYWworeGt1WD-'
+                cartId: '-KPs0qRtYWworeGt1WD-'
             },
             'qwe5f': {
                 ans: "admission",
@@ -26,7 +26,7 @@ export default class Quest extends React.Component{
                 isAnswer: false
             },
             'qwef': {
-                ans: "accelerate",
+                ans: "accelerate",  
                 hindImg:  "img/3.jpg",
                 hintText: "ускорять",
                 isAnswer: false

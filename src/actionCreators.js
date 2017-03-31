@@ -8,9 +8,11 @@ export const CLEAR_STORE        = 'CLEAR_STORE'
 export const QUIZ_LOADED_BY_ID  = 'QUIZ_LOADED_BY_ID'
 export const QUIZ_LOADED_ALL    = 'QUIZ_LOADED_ALL'
 export const META_LOADED        = 'META_LOADED'
+export const CAT_LOADED         = 'CAT_LOADED'
+
 let lastDownloadedQuiz = '-';
 
-
+window.firebase =firebase;
 export function autorized(user){
     return{
       type: AUTHORIZE,
@@ -25,13 +27,6 @@ export function noAutorized(){
 }
 
 export function quizLoaded(quiz){
-
-   if(quiz){
-
-    let quizArray = Object.entries(quiz)
-    lastDownloadedQuiz = quizArray[ quizArray.length - 1 ][0];
-
-   }
  
     return{
       type: QUIZ_LOADED_ALL,
@@ -79,19 +74,31 @@ export function metaLoaded(meta){
     }
 
 }
-export function getQuizAll(number = 2) {
+
+export function catLoaded(cat){
+
+   return {
+    type: CAT_LOADED,
+    payload: {
+        cat
+      }
+   }
+
+}
+
+export function getQuizAll(queryParam = {perPolls: 12, perQuery: 10}) {
 
   // Invert control!
   // Return a function that accepts `dispatch` so we can dispatch later.
   // Thunk middleware knows how to turn thunk async actions into actions.
-
+  let { perPolls, perQuery } =  queryParam;
   return dispatch => {
 
     return   firebase.database()
                 .ref()
                 .child('quiz')
                 .orderByKey()
-                .limitToFirst(number)
+                .limitToFirst(perQuery)
                 .startAt(lastDownloadedQuiz)
                 .once("value")
                 .then((quiz) => {return quiz.val()})
@@ -132,7 +139,19 @@ export function getMeta(){
             firebase.database()
               .ref(`quiz-meta`)
               .once("value")
-              .then(value => {console.log(value.val()); return value.val()})
+              .then(value => { return value.val()})
               .then(meta => dispatch( metaLoaded(meta) ))
+  }
+}
+
+
+export function getCat(){
+
+  return dispatch => {
+            firebase.database()
+              .ref(`categories`)
+              .once("value")
+              .then(value => {return value.val()})
+              .then(cat => dispatch( catLoaded(cat) ))
   }
 }

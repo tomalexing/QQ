@@ -12,17 +12,18 @@ import React, { PropTypes } from 'react'
 import cx from 'classnames'
 import Header from './Header'
 import Footer from '../Footer'
-import Drawer from 'material-ui/Drawer'
+import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import Close from 'material-ui/svg-icons/navigation/close'
 import firebase from 'firebase'
 import Link from '../Link'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import myTheme from "./../../src/theme"
 
-import { getQuizAll, getMeta } from "./../../src/actionCreators"
+import { getQuizAll, getMeta, getCat } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
 
 class Layout extends React.Component {
@@ -34,8 +35,8 @@ class Layout extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      open: false,
-      quiz: null
+      openMenu: false,
+      cat: null
     };
   }
 
@@ -45,17 +46,23 @@ class Layout extends React.Component {
   }
   componentWillReceiveProps(nextProps){
       this.state = {
-          quiz: nextProps.quizs || null
+          cat: nextProps.cat || null
       }
+      console.log(this.state);
   }
 
   componentWillMount() {
-    let { getQuizAll, getMeta } = this.props;
-    getQuizAll();
-    getMeta();
+    let { getCat } = this.props;
+    getCat();
   }
 
-  handleToggle = () => this.setState({ open: !this.state.open });
+  
+  handleOnRequestChange = (value) => {
+    this.setState({
+      openMenu: value,
+    });
+  }
+  handleToggle = () => this.setState({ open: !this.state.openMenu });
   getChildContext() {
     return { muiTheme: getMuiTheme(myTheme) };
   }
@@ -66,11 +73,11 @@ class Layout extends React.Component {
       <div className="mdl-layout mdl-js-layout quiz-out" ref={node => (this.root = node)}>
         <div className="mdl-layout__inner-container">
           <Header handleToggle={this.handleToggle}/>
-          <Drawer 
+          <IconMenu 
+            iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+            onChange={this.handleToggle}
+            value={this.state.valueSingle}
 
-            docked={false}
-            open={this.state.open}
-            onRequestChange={(open) => this.setState({open})}
             className="quiz-sidebar"
           >
             <h2 className={"quiz-sidebar__title"}>All VS</h2>
@@ -78,33 +85,23 @@ class Layout extends React.Component {
               <Close />
             </IconButton>
             {
-              this.state.quiz
+             
+              this.state.cat
                 ?
-                
-                Object.keys(this.state.quiz).map((q, index) => {
-                  return <MenuItem key={index} className={'quiz-sidebar__item'}>
-                            <Link to={`/quiz/${q}`} onClick={this.handleToggle}> 
-                              { <span className={'quiz-sidebar__votes'}>{
-                                  Object.values(this.state.quiz[q]['answers'])[0].quantity +  
-                                  Object.values(this.state.quiz[q]['answers'])[1].quantity 
-                                  }
-                                  { <small>votes</small> 
-                                }</span> 
-                              }
-                              {
-                                Object.values(this.state.quiz[q]['answers'])[0].value 
-                              }
-                              { <i> vs </i> }
-                              {
-                                Object.values(this.state.quiz[q]['answers'])[1].value
-                              }
-                            </Link> 
-                          </MenuItem>
-                })
+                  Object.entries(this.state.cat).map((cat, index) => {
+                    console.log(cat);
+                    return <MenuItem key={index} className={'quiz-sidebar__item'}>
+                              <Link to={`/`} onClick={this.handleToggle}>  
+                                    <img width="60px" height="60px" src={'./' + cat[1]['srcImg']} />
+                                    <span>{cat[0]}</span>
+                              </Link> 
+                            </MenuItem>
+                  })
                 :
                 <div className="quiz-menu_placeholder"></div>
+              
             }
-          </Drawer>
+          </IconMenu>
           <main className="mdl-layout__content">
             <div {...this.props}  className={cx(this.props.className)} />
             <Footer />
@@ -120,6 +117,6 @@ Layout.childContextTypes = {
 };
 export default 
 connect(
-  state => ({quizs: state.quiz}),
-  {getQuizAll, getMeta}
+  state => ({cat: state.cat}),
+  {getQuizAll, getMeta, getCat}
 )(Layout);
