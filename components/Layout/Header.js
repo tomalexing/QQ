@@ -20,6 +20,12 @@ import MenuIcon from 'material-ui/svg-icons/navigation/apps';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import cx from 'classnames';
 import myTheme, { customStyles } from "./../../src/theme";
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+
+import { getQuizAll, getMeta, getCat } from "./../../src/actionCreators"
+import { connect } from 'react-redux'
 
 const {alterBtnStyle} =  customStyles
  
@@ -28,10 +34,13 @@ class Header extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      open: false
+      open: false,
+      cat: null
     }
   }
-
+  getHost(){
+    return window.location.origin
+  }
   handleOpen = () => {
     this.setState({ open: true })
   }
@@ -39,23 +48,58 @@ class Header extends React.Component {
   handleClose = () => {
     this.setState({ open: false })
   }
-
+  
   getChildContext() {
     return { muiTheme: getMuiTheme(myTheme) }
   }
+  componentWillReceiveProps(nextProps){
+      this.state = {
+          cat: nextProps.cat || null
+      }
+  }
+  componentWillMount() {
+    let { getCat } = this.props;
+    getCat();
+  }
 
   render() {
-
     return (
       <header className={`quiz-header`}>
         <div className={`quiz-header__row`}>
           <Link className={`quiz-header__logo`} to="/">
-            <img className="logo" src={`http://${ window.location.host}/img/quiz-logo.png`} />
+            <img className="logo" src={`${ this.getHost() }/img/quiz-logo.png`} />
           </Link>
           <div className="quiz-header__spacer"></div>
-          <IconButton onTouchTap={this.props.handleToggle}  >
-            <MenuIcon color={"#fff"}/> 
-          </IconButton>
+          <IconMenu 
+            iconButtonElement={                 
+                <IconButton   >
+                      <MenuIcon color={"#fff"}/> 
+                      </IconButton>
+            }
+            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            value={1}
+          > 
+              <h2 className={"quiz-sidebar__title"}>
+                 <Link to={`/cats/`} > Categories </Link> 
+              </h2>
+            {
+             
+              this.state.cat
+                ?
+                  Object.entries(this.state.cat).map((cat, index) => {
+                    let catName = cat[0];
+                    return <MenuItem key={index} className={'quiz-sidebar__item'}>
+                              <Link to={`/cat/${catName}/`} onClick={this.handleToggle}>  
+                                    <img width="60px" height="60px" src={Array.join([this.getHost(),'/' ,cat[1]['srcImg']],'')} />
+                                    <span>{cat[0]}</span>
+                              </Link> 
+                            </MenuItem>
+                  })
+                :
+                <div className="quiz-menu_placeholder"></div>
+              
+            }
+          </IconMenu>
           <RaisedButton
               className={cx('quiz-btn', 'quiz-header__create')}
               style={alterBtnStyle.style}
@@ -64,6 +108,8 @@ class Header extends React.Component {
               labelStyle={alterBtnStyle.labelStyle}
             
               label="CREATE QUIZ" />
+
+
           <Dialog
               title="Is Needed?"
               actions={[  
@@ -78,7 +124,7 @@ class Header extends React.Component {
               ]}
               
               modal={false}
-              open={this.state.open}
+              open={this.state.open || false}
               onRequestClose={this.handleClose}
               bodyStyle={{marginTop: 20}}
               contentClassName="mdl-dialog"
@@ -99,4 +145,8 @@ class Header extends React.Component {
 Header.childContextTypes = {
   muiTheme: React.PropTypes.object.isRequired,
 };
-export default Header;
+export default 
+  connect(
+  state => ({cat: state.cat}),
+  {getQuizAll, getMeta, getCat}
+)(Header);

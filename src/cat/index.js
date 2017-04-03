@@ -12,7 +12,7 @@ import { getQuizByID, clearStore, getQuizAll } from './../actionCreators'
 import myTheme, { customStyles } from "./../theme";
 
  
-class Quiz extends React.Component {
+class Categoty extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -121,4 +121,4 @@ Quiz.childContextTypes = {
 export default connect(
     state => ({quizs: state.quiz}),
     {getQuizByID, clearStore, getQuizAll}
-)(Quiz)
+)(Categoty)

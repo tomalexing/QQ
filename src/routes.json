@@ -26,5 +26,13 @@
   {
     "path": "/quest",
     "page": "./quest"
+  },
+  {
+    "path": "/cats",
+    "page": "./cats"
+  },
+    {
+    "path": "/cat/:cat/:id",
+    "page": "./cat"
   }
 ]
