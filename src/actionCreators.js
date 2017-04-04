@@ -8,7 +8,7 @@ export const CLEAR_STORE        = 'CLEAR_STORE'
 export const QUIZ_LOADED_BY_ID  = 'QUIZ_LOADED_BY_ID'
 export const QUIZ_LOADED_ALL    = 'QUIZ_LOADED_ALL'
 export const META_LOADED        = 'META_LOADED'
-export const CAT_LOADED         = 'CAT_LOADED'
+export const CATS_LOADED         = 'CAT_LOADED'
 
 let lastDownloadedQuiz = '-';
 
@@ -75,23 +75,23 @@ export function metaLoaded(meta){
 
 }
 
-export function catLoaded(cat){
+export function catsLoaded(cats){
 
    return {
-    type: CAT_LOADED,
+    type: CATS_LOADED,
     payload: {
-        cat
+        cats
       }
    }
 
 }
 
-export function getQuizAll(queryParam = {perPolls: 12, perQuery: 10}) {
+export function getQuizAll(queryParam = { perQuery: 10}) {
 
   // Invert control!
   // Return a function that accepts `dispatch` so we can dispatch later.
   // Thunk middleware knows how to turn thunk async actions into actions.
-  let { perPolls, perQuery } =  queryParam;
+  let { perQuery } =  queryParam;
   return dispatch => {
 
     return   firebase.database()
@@ -145,13 +145,46 @@ export function getMeta(){
 }
 
 
-export function getCat(){
+export function getCats(){
 
   return dispatch => {
             firebase.database()
               .ref(`categories`)
               .once("value")
               .then(value => {return value.val()})
-              .then(cat => dispatch( catLoaded(cat) ))
+              .then(cat => dispatch( catsLoaded(cat) ))
+  }
+}
+
+
+export function getCat(queryParam = {cat : 'default', perQuery: 10}){
+
+  let { perQuery, cat } =  queryParam;
+
+   return dispatch =>{  firebase.database()
+                .ref()
+                .child('quiz')
+                .once("value")
+                .then((quiz) => {return quiz.val()})
+                .then(
+                   
+                    quiz => { 
+                      let realIndexs = [], iter = 0, sortedQuiz = {};
+                  
+                      Object.values(quiz).map( (q, index) => {if (q.category === cat) realIndexs.push(index) });
+                      
+                      for ( let q in quiz){
+                        if (quiz.hasOwnProperty(q) && iter++ == realIndexs[0]) {
+                          let innerObj = quiz[q];
+                            sortedQuiz[q]  = innerObj ;
+                            realIndexs.shift();
+                        }
+                      } 
+                      
+                      
+                      dispatch( quizLoaded(sortedQuiz));
+                    },
+                    err =>  dispatch( quizNotLoaded() )
+                )
   }
 }

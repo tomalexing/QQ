@@ -31,8 +31,12 @@
     "path": "/cats",
     "page": "./cats"
   },
-    {
+  {
     "path": "/cat/:cat/:id",
+    "page": "./cat"
+  },
+  {
+    "path": "/cat/:cat",
     "page": "./cat"
   }
 ]

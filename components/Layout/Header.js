@@ -24,7 +24,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-import { getQuizAll, getMeta, getCat } from "./../../src/actionCreators"
+import { getQuizAll, getMeta, getCats } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
 
 const {alterBtnStyle} =  customStyles
@@ -35,7 +35,7 @@ class Header extends React.Component {
     super(props)
     this.state = {
       open: false,
-      cat: null
+      cats: null
     }
   }
   getHost(){
@@ -54,12 +54,12 @@ class Header extends React.Component {
   }
   componentWillReceiveProps(nextProps){
       this.state = {
-          cat: nextProps.cat || null
+          cats: nextProps.cats || null
       }
   }
   componentWillMount() {
-    let { getCat } = this.props;
-    getCat();
+    let { getCats } = this.props;
+    getCats();
   }
 
   render() {
@@ -84,14 +84,15 @@ class Header extends React.Component {
               </h2>
             {
              
-              this.state.cat
+              this.state.cats
                 ?
-                  Object.entries(this.state.cat).map((cat, index) => {
+                  Object.values(this.state.cats).map((cat, index) => {
                     let catName = cat[0];
                     return <MenuItem key={index} className={'quiz-sidebar__item'}>
-                              <Link to={`/cat/${catName}/`} onClick={this.handleToggle}>  
-                                    <img width="60px" height="60px" src={Array.join([this.getHost(),'/' ,cat[1]['srcImg']],'')} />
-                                    <span>{cat[0]}</span>
+                              <Link to={`/cat/${Object.entries(this.state.cats)[index][0]}/`} onClick={this.handleToggle}>  
+                                    <img width="60px" height="60px" src={Array.join([this.getHost(),'/' ,cat['srcImg']],'')} />
+                                    <span>{cat.title}</span>
+                                    <span>{cat.quantity}</span>
                               </Link> 
                             </MenuItem>
                   })
@@ -147,6 +148,6 @@ Header.childContextTypes = {
 };
 export default 
   connect(
-  state => ({cat: state.cat}),
-  {getQuizAll, getMeta, getCat}
+  state => ({cats: state.cats}),
+  {getQuizAll, getMeta, getCats}
 )(Header);

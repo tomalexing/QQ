@@ -9,7 +9,7 @@ import Layout from './../../components/Layout'
 import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/content/forward';
-import { getQuizByID, getCat, getMeta } from './../actionCreators'
+import { getQuizByID, getCats, getMeta } from './../actionCreators'
 
 class Categoties extends React.Component{
 
@@ -35,8 +35,8 @@ class Categoties extends React.Component{
         return color;
     }
     componentWillMount() {
-        let { getCat } = this.props;
-        getCat();
+        let { getCats } = this.props;
+        getCats();
     }
 
     componentWillReceiveProps(nextProps){
@@ -75,19 +75,19 @@ class Categoties extends React.Component{
                                 padding={1}
                                 style={styles.gridList}
                                 >
-                                {Object.values(this.state.cats).map((tile) => (
+                                {Object.values(this.state.cats).map((tile, index) => (
                                     <GridTile
-                                    key={this.getHost + '/' +tile.scrImg}
+                                    key={this.getHost + '/' +tile.srcImg}
                                     title={tile.title}
                                     subtitle={<span>Quantity: <b>{tile.quantity}</b></span>}
-                                    actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+                                    actionIcon={<IconButton href={`/cat/${Object.entries(this.state.cats)[index][0]}`}><StarBorder color="white" /></IconButton>}
                                     actionPosition="right"
                                     titlePosition="top"
                                     titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
                                     cols={tile.featured ? 2 : 1}
                                     rows={tile.featured ? 2 : 1}
                                     >
-                                    <img src={this.getHost + '/' +tile.scrImg} />
+                                    <img src={this.getHost + '/' +tile.srcImg} />
                                     </GridTile>
                                 ))}
                                 </GridList>
@@ -113,6 +113,6 @@ Categoties.childContextTypes = {
 
 export default 
 connect(
-state => ({cats: state.cat}),
-  {getQuizByID, getMeta, getCat}
+state => ({cats: state.cats}),
+  {getQuizByID, getMeta, getCats}
 )(Categoties)   

@@ -13,12 +13,12 @@ import thunk from 'redux-thunk';
 import { AUTHORIZE, NOT_AUTHORIZE, QUIZ_LOADED, 
   QUIZ_NOT_LOADED, QUIZ_LOADED_BY_ID,
   QUIZ_LOADED_ALL,
-   CLEAR_STORE, META_LOADED, CAT_LOADED }  from './actionCreators'
+   CLEAR_STORE, META_LOADED, CATS_LOADED }  from './actionCreators'
 
 // Centralized application state
 // For more information visit http://redux.js.org/
 
-const initialState = { user: {}, quiz : {}, meta: {}, cat:[] };
+const initialState = { user: {}, quiz : {}, meta: {}, cats:[], cat: {} };
 
 const store = createStore((state = initialState, action) => {
   // TODO: Add action handlers (aka "reducers")
@@ -37,8 +37,8 @@ const store = createStore((state = initialState, action) => {
       return { ...state, quiz: {}};
     case META_LOADED :
       return { ...state, meta: action.payload.meta};
-    case CAT_LOADED :
-      return { ...state, cat: action.payload.cat};
+    case CATS_LOADED :
+      return { ...state, cats: action.payload.cats};
     default:
       return state;
   }
