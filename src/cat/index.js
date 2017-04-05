@@ -38,16 +38,27 @@ class Categoty extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
+
+        if(this.state.cat !== nextProps.route.params.cat){
+            this.state = {
+                ...this.state,
+                loading: false,
+                finished: false,
+                stepIndex: 0,
+            }
+        }
+
         this.state.cat =  nextProps.route.params.cat || 'default';
 
         let realIndexs = [], iter = 0, sortedQuiz = {}, quantityOfCat = 0;
+        
 
         if (nextProps.quizs) {
             if(Object.entries(this.props.cats).length == 0){
                 let {getCats} = this.props;
                 getCats();
             }else{
-                 Object.entries(this.props.cats).map(c => { if( c[0] == this.state.cat) quantityOfCat =  c[1]['quantity']});
+                quantityOfCat = this.getQuantityOfCat();
             }
            
               
@@ -78,13 +89,29 @@ class Categoty extends React.Component {
         return ( true )
     }
     
+    getQuantityOfCat(){
+        let quantityOfCat = 0;
+        Object.entries(this.props.cats).map(c => { if( c[0] == this.state.cat) quantityOfCat =  c[1]['quantity']});
+        return quantityOfCat;
+    }
 
+    componentWillUmount(){
+
+        this.state = {
+            ...this.state,
+            loading: false,
+            finished: false,
+            stepIndex: 0
+        }
+        
+    }
     componentWillMount() {
-        let { getCat } = this.props;
+        let { getCat, getCats } = this.props;
         let query = {
             cat: this.state.cat
 
-        }
+        }  
+        getCats();
         getCat(query);
     }
 
@@ -103,9 +130,9 @@ class Categoty extends React.Component {
 
     dummyAsync = (cb) => {
         this.setState({ loading: true }, () => {
-            this.asyncTimer = setTimeout(cb, 500);
+            this.asyncTimer = setTimeout(cb, 0);
         });
-    };
+    }
 
     handleNext = () => {
         const { stepIndex } = this.state;
@@ -113,10 +140,10 @@ class Categoty extends React.Component {
             this.dummyAsync(() => this.setState({
                 loading: false,
                 stepIndex: stepIndex + 1,
-                finished: stepIndex >= 2,
+                finished: stepIndex >= this.getQuantityOfCat() - 1,
             }));
         }
-    };
+    }
 
     handlePrev = () => {
         const { stepIndex } = this.state;
@@ -126,13 +153,15 @@ class Categoty extends React.Component {
                 stepIndex: stepIndex - 1,
             }));
         }
-    };
+    }
+
     getQuizByIndex(index){
 
         let indexedQuizId = Object.entries( this.state.quiz )[index][0];
         return { id: indexedQuizId, stepperQuiz: this.state.quiz[indexedQuizId] }
 
     }
+    
     getStepContent(stepIndex) {
 
         let {id, stepperQuiz} =  this.getQuizByIndex(stepIndex);
@@ -165,10 +194,10 @@ class Categoty extends React.Component {
                                 event.preventDefault();
                                 this.setState({ stepIndex: 0, finished: false });
                             }}
-                        >
+                         >
                             Click here
-            </a> to reset the example.
-          </p>
+                        </a> to reset the example.
+                    </p>
                 </div>
             );
         }
@@ -192,6 +221,8 @@ class Categoty extends React.Component {
             </div>
         );
     }
+
+    
     render() {
         let that = this;
         let color = this.getRandomColor();
@@ -210,19 +241,18 @@ class Categoty extends React.Component {
                             <div className={'quiz'}>
                                 <div style={{ width: '100%', maxWidth: 700, margin: 'auto' }}>
                                     <Stepper activeStep={stepIndex}>
-                                        <Step>
-                                            <StepLabel>Select campaign settings</StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel>Create an ad group</StepLabel>
-                                        </Step>
-                                        <Step>
-                                            <StepLabel>Create an ad</StepLabel>
+                                        {Array.from(Array(this.getQuantityOfCat()).keys()).map(i=>{
+                                            return (
+                                                 <Step key={i}>
+                                                    <StepLabel> </StepLabel>
+                                                </Step>
+                                            )
+                                        })}
+                                         <Step >
+                                            <StepLabel> </StepLabel>
                                         </Step>
                                     </Stepper>
-                                    <ExpandTransition loading={loading} open={true}>
-                                        {this.renderContent()}
-                                    </ExpandTransition>
+                                    {this.renderContent()}
                                 </div> 
                             </div>
                             :
