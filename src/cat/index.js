@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import { getQuizByID, clearStore, getCat, getCats } from './../actionCreators'
 import myTheme, { customStyles } from "./../theme";
 import onlyUpdateForKeys from "recompose/onlyUpdateForKeys";
-
+import ReactDOM from 'react-dom';
 import {
   Step,
   Stepper,
@@ -144,9 +144,42 @@ class Category extends React.Component {
         return { muiTheme: getMuiTheme(myTheme) }
     }
 
+    requestAnimationFramePromise = _ => new Promise(requestAnimationFrame);
+    transitionEndPromise = elem => new Promise(resolve => {
+        setTimeout(_=>{elem.addEventListener('transitionend', resolve , {once: true})}, 1000); // Lag of applying CSS
+    })
+    transitionEndPromiseSetTimeout = (elem, time) => new Promise(resolve => {
+        elem.addEventListener('transitionend', setTimeout(resolve, time) , {once: true})
+    })
+  
     dummyAsync = (cb) => {
+
+        let requestAnimationFramePromise = this.requestAnimationFramePromise,
+            quizRef                      = this.quizRef,
+            transitionEndPromise         = this.transitionEndPromise;
+
         this.setState({ loading: true }, () => {
-            this.asyncTimer = setTimeout(cb, 0);
+            // quizRef.style.transition = `transform 2s ease-in-out`; 
+            // quizRef.style.transform = `translateX(0px)`;
+            // requestAnimationFramePromise()
+            //     .then( _ => requestAnimationFramePromise())
+            //     .then( _ => {
+            //         quizRef.style.transform = `translateX(1000px) scale(.4)`;
+            //         return this.transitionEndPromise(quizRef)
+            //     })
+                
+            //     .then( _ => {
+            //         quizRef.style.transform = `translateX(0px) scale(1)`; 
+                 
+            //         return this.transitionEndPromise(quizRef)
+            //     })
+            //     .then( _ => {
+            //         quizRef.style.transition = '';
+            //         return this.transitionEndPromise(quizRef) })
+            //     .then( _ => {
+            //         quizRef.style.transform = '';
+            //     });
+              cb();  
         });
     }
 
@@ -171,7 +204,7 @@ class Category extends React.Component {
         }
     }
 
-    getQuizByIndex(index){
+    getQuizByIndex(index) {
 
         let indexedQuizId = Object.entries( this.state.quiz )[index][0];
         return { id: indexedQuizId, stepperQuiz: this.state.quiz[indexedQuizId] }
@@ -254,7 +287,7 @@ class Category extends React.Component {
                     {
                         (Object.entries(this.state.quiz).length > 0 )
                             ?
-                            <div className={'quiz'}>
+                            <div className={'quiz'} ref={node => (this.quizRef = node)}>
                                 <div style={{ width: '100%', maxWidth: 700, margin: 'auto' }}>
                                     <Stepper activeStep={stepIndex}>
                                         {Array.from(Array(this.getQuantityOfCat()).keys()).map(i=>{
@@ -267,6 +300,8 @@ class Category extends React.Component {
                                          <Step >
                                             <StepLabel> </StepLabel>
                                         </Step>
+                                        
+
                                     </Stepper>
                                     {this.renderContent()}
                                 </div> 

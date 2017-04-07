@@ -460,9 +460,19 @@ class Cart extends React.Component {
         </div>
         )
     }
-
 }
+
 Cart.childContextTypes = {
     muiTheme: React.PropTypes.object.isRequired,
 };
+
+Cart.propTypes = {
+    question: PropTypes.string,
+    q1: PropTypes.string,
+    q2: PropTypes.string,
+    cartId: PropTypes.string,
+    leftCartUID: PropTypes.string,
+    rightCartUID: PropTypes.string
+};
+
 export default Cart;

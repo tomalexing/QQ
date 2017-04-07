@@ -33,6 +33,8 @@ function renderComponent(component) {
   ReactDOM.render(<Provider store={store}>{component}</Provider>, container);
 }
 
+
+
 // middleware for check if user login
 function checkAdmin(component){
     if ( isAdminArea(component) ) {
