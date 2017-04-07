@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Cart from './../../components/Cart'
 import Layout from "./../../components/Layout"
 import Link from './../../components/Link'
@@ -23,7 +23,8 @@ import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import TextField from 'material-ui/TextField';
 
 
-class Categoty extends React.Component {
+class Category extends React.Component {
+
     constructor(props) {
         super(props)
         this.state = {
@@ -36,63 +37,62 @@ class Categoty extends React.Component {
 
     }
 
+    componentWillMount() {
+        let { getCat, getCats } = this.props;
+        let query = {
+            cat: this.state.cat
+
+        }  
+        getCats();
+        getCat(query);
+    }
 
     componentWillReceiveProps(nextProps) {
 
         if(this.state.cat !== nextProps.route.params.cat){
-            this.state = {
-                ...this.state,
+            this.setState({
                 loading: false,
                 finished: false,
-                stepIndex: 0,
-            }
+                stepIndex: 0
+            });
         }
 
-        this.state.cat =  nextProps.route.params.cat || 'default';
+        if(this.state.cat !==  nextProps.route.params.cat){
+             this.state.cat = nextProps.route.params.cat
+        }
 
-        let realIndexs = [], iter = 0, sortedQuiz = {}, quantityOfCat = 0;
+        let sortedQuiz = {}, quantityOfCat = 0;
         
-
         if (nextProps.quizs) {
-            if(Object.entries(this.props.cats).length == 0){
-                let {getCats} = this.props;
-                getCats();
-            }else{
-                quantityOfCat = this.getQuantityOfCat();
-            }
-           
-              
-            Object.values(nextProps.quizs).map( (q, index) => {if (q.category === this.state.cat) realIndexs.push(index) });
-            for (let q in nextProps.quizs) {
-                if (nextProps.quizs.hasOwnProperty(q) && iter++ == realIndexs[0]) {
-                    let innerObj = nextProps.quizs[q];
-                    sortedQuiz[q] = innerObj;
-                    realIndexs.shift();
-                }
-            }
-        }
-        if(Object.entries(sortedQuiz).length < quantityOfCat){
-            let { getCat } = this.props;
-            let query = {
-                cat: this.state.cat
-            }
-            getCat(query);
-        }else{
-            this.setState({
-                quiz: sortedQuiz
-            })
+            quantityOfCat = this.getQuantityOfCat()
+            sortedQuiz = this.filterQuizByCat(nextProps.quizs, this.state.cat)
         }
 
+        if(!this.props.quizLoading ){
+            if(Object.entries(sortedQuiz).length < quantityOfCat ){
+                let { getCat } = this.props;
+                let lastKey = '-';
+                Object.entries( nextProps.quizs ).map(q => lastKey = q[0])
+                let query = {
+                    cat: this.state.cat,
+                    startFrom:  lastKey
+                }
+                getCat(query);
+            }else{
+
+                this.setState({
+                    quiz: sortedQuiz
+                })
+            }
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        return ( true )
-    }
-    
-    getQuantityOfCat(){
-        let quantityOfCat = 0;
-        Object.entries(this.props.cats).map(c => { if( c[0] == this.state.cat) quantityOfCat =  c[1]['quantity']});
-        return quantityOfCat;
+
+        if( nextState === this.state ) {
+            return false;
+        }
+        return true;
     }
 
     componentWillUmount(){
@@ -105,16 +105,32 @@ class Categoty extends React.Component {
         }
         
     }
-    componentWillMount() {
-        let { getCat, getCats } = this.props;
-        let query = {
-            cat: this.state.cat
 
-        }  
-        getCats();
-        getCat(query);
+    getQuantityOfCat(){
+        let quantityOfCat = 0;
+        if(Object.entries(this.props.cats).length == 0){  // get Categoties info 
+                let {getCats} = this.props;
+                getCats();
+            }else{
+                 Object.entries(this.props.cats).map(c => { if( c[0] == this.state.cat) quantityOfCat =  c[1]['quantity']});
+            }  
+        return quantityOfCat;
     }
 
+    filterQuizByCat(quizs, cat){
+
+        let realIndexs = [], iter = 0, sortedQuiz = {};
+        Object.values(quizs).map( (q, index) => {if (q.category === cat) realIndexs.push(index) }); // get category` carts from store
+        for (let q in quizs) {
+            if (quizs.hasOwnProperty(q) && iter++ == realIndexs[0]) {
+                let innerObj = quizs[q];
+                sortedQuiz[q] = innerObj;
+                realIndexs.shift();
+            }
+        }
+        return sortedQuiz
+
+    }
     getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -222,7 +238,7 @@ class Categoty extends React.Component {
         );
     }
 
-    
+
     render() {
         let that = this;
         let color = this.getRandomColor();
@@ -268,15 +284,41 @@ class Categoty extends React.Component {
 
 
 }
-Categoty.childContextTypes = {
-    muiTheme: React.PropTypes.object.isRequired,
+
+Category.childContextTypes = {
+    muiTheme: PropTypes.object.isRequired,
 };
 
+Category.propTypes = {
+    getCat: PropTypes.func.isRequired,
+    getCats: PropTypes.func.isRequired,
+    quizs: PropTypes.array.isRequired,
+    cats: PropTypes.object.isRequired, 
+    quizLoading: PropTypes.bool.isRequired
+};
+
+function mapStatetoProps( state, props ) { 
+
+    let realIndexs = [], sortedQuiz = [], iter = 0;
+    Object.values(state.quiz).map( (q, index) => {if (q.category === props.route.params.cat) realIndexs.push(index) }); // get category` carts from store
+    for (let q in state.quiz) {
+        if (state.quiz.hasOwnProperty(q) && iter++ == realIndexs[0]) {
+            let innerObj = state.quiz[q];
+            sortedQuiz[q] = innerObj;
+            realIndexs.shift();
+        }
+    }
+    
+
+    return {
+            quizs: sortedQuiz,
+            cats: state.cats,
+            quizLoading: state.quizLoading
+    }
+}
+
 export default connect(
-        state => ({ 
-            quizs: state.quiz,
-            cats: state.cats
-         }),
-        { getQuizByID, clearStore, getCat, getCats }
-    )(Categoty)
+        mapStatetoProps,
+        { getCat, getCats }
+    )(Category)
 

@@ -50,7 +50,7 @@ class Q extends React.Component {
 
         let ansToRender = []
   
-        each(answers,(key, val, i)=>{
+        each(answers,(key, val, i) => {
             
             let classLi = cx(
                 'qCart-simple__ans',

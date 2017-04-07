@@ -1,23 +1,23 @@
 import firebase from 'firebase'
 import store from './store'
-export const AUTHORIZE          = 'AUTHORIZE'
-export const NOT_AUTHORIZE      = 'NOT_AUTHORIZE'
-export const QUIZ_LOADED        = 'QUIZ_LOADED'
-export const QUIZ_NOT_LOADED    = 'QUIZ_NOT_LOADED'
-export const CLEAR_STORE        = 'CLEAR_STORE'
-export const QUIZ_LOADED_BY_ID  = 'QUIZ_LOADED_BY_ID'
-export const QUIZ_LOADED_ALL    = 'QUIZ_LOADED_ALL'
-export const META_LOADED        = 'META_LOADED'
+export const AUTHORIZE           = 'AUTHORIZE'
+export const NOT_AUTHORIZE       = 'NOT_AUTHORIZE'
+export const QUIZ_LOADED         = 'QUIZ_LOADED'
+export const QUIZ_NOT_LOADED     = 'QUIZ_NOT_LOADED'
+export const CLEAR_STORE         = 'CLEAR_STORE'
+export const QUIZ_LOADED_BY_ID   = 'QUIZ_LOADED_BY_ID'
+export const QUIZ_LOADED_ALL     = 'QUIZ_LOADED_ALL'
+export const META_LOADED         = 'META_LOADED'
 export const CATS_LOADED         = 'CAT_LOADED'
+export const QUIZ_LOADING        = 'QUIZ_LOADING';
+let lastKey = '-';
 
-let lastDownloadedQuiz = '-';
-
-window.firebase =firebase;
+window.firebase = firebase;
 export function autorized(user){
     return{
       type: AUTHORIZE,
       user
-    }
+    } 
 }
 
 export function noAutorized(){
@@ -86,24 +86,34 @@ export function catsLoaded(cats){
 
 }
 
-export function getQuizAll(queryParam = { perQuery: 10}) {
+export function quizLoading(){
+
+   return {
+    type: QUIZ_LOADING,
+   }
+
+}
+export function getQuizAll({perQuery = 3} = {}) {
 
   // Invert control!
   // Return a function that accepts `dispatch` so we can dispatch later.
   // Thunk middleware knows how to turn thunk async actions into actions.
-  let { perQuery } =  queryParam;
-  return dispatch => {
 
+  return dispatch => {
+    dispatch( quizLoading());
     return   firebase.database()
                 .ref()
                 .child('quiz')
                 .orderByKey()
+                .startAt(lastKey)
                 .limitToFirst(perQuery)
-                .startAt(lastDownloadedQuiz)
                 .once("value")
                 .then((quiz) => {return quiz.val()})
                 .then(
-                    quiz => { dispatch( quizLoaded(quiz))},
+                    quiz => {
+                      Object.entries(quiz).map(q=>lastKey = q[0])
+                      dispatch( quizLoaded(quiz));
+                    },
                     err =>  dispatch( quizNotLoaded() )
                 )
   }
@@ -117,7 +127,7 @@ export function getQuizByID(id) {
 
 
   return dispatch => {
-
+            dispatch( quizLoading());
             if(!id)
               dispatch (quizNotLoadedByID())
 
@@ -157,32 +167,27 @@ export function getCats(){
 }
 
 
-export function getCat(queryParam = {cat : 'default', perQuery: 10}){
+export function getCat({perQuery = 3} = {}){
+     // Invert control!
+  // Return a function that accepts `dispatch` so we can dispatch later.
+  // Thunk middleware knows how to turn thunk async actions into actions.
 
-  let { perQuery, cat } =  queryParam;
 
-   return dispatch =>{  firebase.database()
+  
+   return dispatch =>{  
+        dispatch( quizLoading());
+        firebase.database()
                 .ref()
                 .child('quiz')
+                .orderByKey()
+                .startAt(lastKey)
+                .limitToFirst(perQuery)
                 .once("value")
                 .then((quiz) => {return quiz.val()})
-                .then(
-                   
-                    quiz => { 
-                      let realIndexs = [], iter = 0, sortedQuiz = {};
-                  
-                      Object.values(quiz).map( (q, index) => {if (q.category === cat) realIndexs.push(index) });
-                      
-                      for ( let q in quiz){
-                        if (quiz.hasOwnProperty(q) && iter++ == realIndexs[0]) {
-                          let innerObj = quiz[q];
-                            sortedQuiz[q]  = innerObj ;
-                            realIndexs.shift();
-                        }
-                      } 
-                      
-                      
-                      dispatch( quizLoaded(sortedQuiz));
+                .then(  
+                    quiz => {
+                      Object.entries(quiz).map(q=>lastKey = q[0])
+                      dispatch( quizLoaded(quiz));
                     },
                     err =>  dispatch( quizNotLoaded() )
                 )

@@ -13,12 +13,12 @@ import thunk from 'redux-thunk';
 import { AUTHORIZE, NOT_AUTHORIZE, QUIZ_LOADED, 
   QUIZ_NOT_LOADED, QUIZ_LOADED_BY_ID,
   QUIZ_LOADED_ALL,
-   CLEAR_STORE, META_LOADED, CATS_LOADED }  from './actionCreators'
+   CLEAR_STORE, META_LOADED, CATS_LOADED, QUIZ_LOADING }  from './actionCreators'
 
 // Centralized application state
 // For more information visit http://redux.js.org/
 
-const initialState = { user: {}, quiz : {}, meta: {}, cats:[], cat: {} };
+const initialState = { user: {}, quiz : {}, meta: {}, cats:{}, cat: {}, quizLoading: false };
 
 const store = createStore((state = initialState, action) => {
   // TODO: Add action handlers (aka "reducers")
@@ -28,9 +28,9 @@ const store = createStore((state = initialState, action) => {
     case NOT_AUTHORIZE :
       return { ...state, user: {}  };
     case QUIZ_LOADED_BY_ID :
-      return { ...state, quiz: Object.assign({}, state.quiz, { [`${action.payload.id}`] : action.payload.quiz}  ) };
+      return { ...state, quiz: Object.assign({}, state.quiz, { [`${action.payload.id}`] : action.payload.quiz}  ), quizLoading: false };
     case QUIZ_LOADED_ALL :
-    return { ...state, quiz:  action.quiz };
+    return { ...state, quiz:  Object.assign({}, state.quiz, action.quiz  ), quizLoading: false};
     case QUIZ_NOT_LOADED :
       return { ...state, quiz: {...state.quiz}};
     case CLEAR_STORE :
@@ -39,6 +39,8 @@ const store = createStore((state = initialState, action) => {
       return { ...state, meta: action.payload.meta};
     case CATS_LOADED :
       return { ...state, cats: action.payload.cats};
+    case QUIZ_LOADING :
+      return  { ...state, quizLoading: true};
     default:
       return state;
   }
