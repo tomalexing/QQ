@@ -12,16 +12,16 @@ import { getQuizByID, clearStore, getCat, getCats } from './../actionCreators'
 import myTheme, { customStyles } from "./../theme";
 import onlyUpdateForKeys from "recompose/onlyUpdateForKeys";
 import ReactDOM from 'react-dom';
-import {
-  Step,
-  Stepper,
-  StepLabel,
-} from 'material-ui/Stepper';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import TextField from 'material-ui/TextField';
+import shortid from 'shortid';
+import cx from 'classnames';
 
+
+const {alterBtnStyle} =  customStyles
 
 class Category extends React.Component {
 
@@ -254,18 +254,24 @@ class Category extends React.Component {
         return (
             <div style={contentStyle}>
                 <div>{this.getStepContent(stepIndex)}</div>
-                <div style={{ marginTop: 24, marginBottom: 12 }}>
-                    <FlatButton
+                <div className={'quiz-pagination__group__btn'} >
+                    <RaisedButton
+                        className={cx('quiz-btn','quiz-pagination__btn')}
                         label="Back"
-                        disabled={stepIndex === 0}
+                        style={alterBtnStyle.style}
+                        buttonStyle={alterBtnStyle.buttonStyle}
                         onTouchTap={this.handlePrev}
-                        style={{ marginRight: 12 }}
+                        labelStyle={alterBtnStyle.labelStyle}
                     />
                     <RaisedButton
+                        className={cx('quiz-btn', 'quiz-header__create')}
                         label={stepIndex === 2 ? 'Finish' : 'Next'}
-                        primary={true}
+                        style={alterBtnStyle.style}
+                        buttonStyle={alterBtnStyle.buttonStyle}
                         onTouchTap={this.handleNext}
+                        labelStyle={alterBtnStyle.labelStyle}
                     />
+                 
                 </div>
             </div>
         );
@@ -283,28 +289,24 @@ class Category extends React.Component {
 
             <Layout>
                 <div className={"quiz-container"}>
-                    <div style={{ background: color }}>{color}</div>
                     {
                         (Object.entries(this.state.quiz).length > 0 )
                             ?
                             <div className={'quiz'} ref={node => (this.quizRef = node)}>
-                                <div style={{ width: '100%', maxWidth: 700, margin: 'auto' }}>
-                                    <Stepper activeStep={stepIndex}>
-                                        {Array.from(Array(this.getQuantityOfCat()).keys()).map(i=>{
-                                            return (
-                                                 <Step key={i}>
-                                                    <StepLabel> </StepLabel>
-                                                </Step>
-                                            )
-                                        })}
-                                         <Step >
-                                            <StepLabel> </StepLabel>
-                                        </Step>
-                                        
-
-                                    </Stepper>
-                                    {this.renderContent()}
-                                </div> 
+                                <div  className={'quiz-stepper'} >
+                                    {Array.from(Array(stepIndex+1).keys()).map(i=>{
+                                        console.log(i)
+                                        return (
+                                            <div className={'quiz-stepper__in active'} key={shortid.generate()}></div>
+                                        )
+                                    })}
+                                    {Array.from(Array(this.getQuantityOfCat()-stepIndex).keys()).map(i=>{
+                                        return(
+                                             <div className={'quiz-stepper__in'} key={shortid.generate()}> </div>
+                                        )
+                                    })}
+                                </div>
+                                {this.renderContent()} 
                             </div>
                             :
                             <div className="preloading__cart">

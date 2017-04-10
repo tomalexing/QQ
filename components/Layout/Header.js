@@ -27,7 +27,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { getQuizAll, getMeta, getCats } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
 
-const {alterBtnStyle} =  customStyles
+const {alterBtnStyle, dropDownMenuItem} =  customStyles
  
 class Header extends React.Component {
 
@@ -72,23 +72,23 @@ class Header extends React.Component {
           <div className="quiz-header__spacer"></div>
           <IconMenu 
             iconButtonElement={                 
-                <IconButton   >
-                      <MenuIcon color={"#fff"}/> 
-                      </IconButton>
+                <div  className={'quiz-header__btn'} >
+                     Polles
+                </div>
             }
-            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            
+            menuStyle={dropDownMenuItem}
+            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
             value={1}
           > 
-              <h2 className={"quiz-sidebar__title"}>
-                 <Link to={`/cats/`} > Categories </Link> 
-              </h2>
+
             {
              
               this.state.cats
                 ?
                   Object.values(this.state.cats).map((cat, index) => {
                     let catName = cat[0];
-                    return <MenuItem key={index} className={'quiz-sidebar__item'}>
+                    return <MenuItem key={index} className={'quiz-header__menu__item'} style={dropDownMenuItem}>
                               <Link to={`/cat/${Object.entries(this.state.cats)[index][0]}/`} onClick={this.handleToggle}>  
                                     <img width="60px" height="60px" src={Array.join([this.getHost(),'/' ,cat['srcImg']],'')} />
                                     <span>{cat.title}</span>

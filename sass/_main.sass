@@ -282,3 +282,25 @@ $quiz-red: #FC3868
 .quiz-btn__next
 	@extend %quiz-btn
 	right: 50px
+
+
+.quiz-stepper
+	position: absolute
+	top: 52px
+	left: 0px
+	height: 3px
+	width: 100%
+	background: white
+	display: flex
+	&__in
+		display: inline-block
+		height: 100%
+		flex: 1 1 auto
+		&.active
+			background: $quiz-red
+
+.quiz-pagination__group__btn
+	margin: 24px 0 12px
+	text-align: center
+	& .quiz-pagination__btn
+		margin: 0 10px

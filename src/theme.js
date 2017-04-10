@@ -48,6 +48,7 @@ export default {
     ripple: {
         color: "#000"
     },
+
 };
 export const customStyles ={
 
@@ -65,5 +66,11 @@ export const customStyles ={
         style: {
             borderRadius: "20px", 
         }
+    },
+    dropDownMenuItem : {
+        backgroundColor: '#474E65',
+        color: 'white',
+        width: '200px'
     }
+
 }

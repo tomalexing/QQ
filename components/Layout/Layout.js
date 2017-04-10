@@ -12,20 +12,18 @@ import React, { PropTypes } from 'react'
 import cx from 'classnames'
 import Header from './Header'
 import Footer from '../Footer'
-import IconMenu from 'material-ui/IconMenu'
+import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import Close from 'material-ui/svg-icons/navigation/close'
 import firebase from 'firebase'
 import Link from '../Link'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import myTheme from "./../../src/theme" 
+import myTheme from "./../../src/theme"
 
-import { getQuizAll, getMeta, getCat } from "./../../src/actionCreators"
+import { getQuizAll, getMeta } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
-import createFragment from 'react-addons-create-fragment'
 
 class Layout extends React.Component {
 
@@ -35,24 +33,80 @@ class Layout extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = { 
+      open: false,
+      quiz: null
+    };
   }
 
+  componentDidMount() {
 
 
+  }
+  componentWillReceiveProps(nextProps){
+      this.state = {
+          quiz: nextProps.quizs || null
+      }
+  }
 
+  componentWillMount() {
+    let { getQuizAll, getMeta } = this.props;
+    getQuizAll();
+    getMeta();
+  }
+
+  handleToggle = () => this.setState({ open: !this.state.open });
   getChildContext() {
     return { muiTheme: getMuiTheme(myTheme) };
   }
 
   render() {
-    const { children } = this.props;
-  
+
     return (
       <div className="mdl-layout mdl-js-layout quiz-out" ref={node => (this.root = node)}>
         <div className="mdl-layout__inner-container">
           <Header />
+          <Drawer 
+
+            docked={false}
+            open={this.state.open}
+            onRequestChange={(open) => this.setState({open})}
+            className="quiz-sidebar"
+          >
+            <h2 className={"quiz-sidebar__title"}>All VS</h2>
+            <IconButton className={"quiz-sidebar__close"} onTouchTap={this.handleToggle}>
+              <Close />
+            </IconButton>
+            {
+              this.state.quiz
+                ?
+                
+                Object.keys(this.state.quiz).map((q, index) => {
+                  return <MenuItem key={index} className={'quiz-sidebar__item'}>
+                            <Link to={`/quiz/${q}`} onClick={this.handleToggle}> 
+                              { <span className={'quiz-sidebar__votes'}>{
+                                  Object.values(this.state.quiz[q]['answers'])[0].quantity +  
+                                  Object.values(this.state.quiz[q]['answers'])[1].quantity 
+                                  }
+                                  { <small>votes</small> 
+                                }</span> 
+                              }
+                              {
+                                Object.values(this.state.quiz[q]['answers'])[0].value 
+                              }
+                              { <i> vs </i> }
+                              {
+                                Object.values(this.state.quiz[q]['answers'])[1].value
+                              }
+                            </Link> 
+                          </MenuItem>
+                })
+                :
+                <div className="quiz-menu_placeholder"></div>
+            }
+          </Drawer>
           <main className="mdl-layout__content">
-            {children}
+            <div {...this.props}  className={cx(this.props.className)} />
             <Footer />
           </main>
         </div>
@@ -64,4 +118,8 @@ class Layout extends React.Component {
 Layout.childContextTypes = {
   muiTheme: React.PropTypes.object.isRequired,
 };
-export default Layout
+export default 
+connect(
+  state => ({quizs: state.quiz}),
+  {getQuizAll, getMeta}
+)(Layout);

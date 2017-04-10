@@ -1,10 +1,12 @@
+$quiz-bg: #474E65
+$quiz-red: #FC3868
 
 .quiz-header
 	background: $quiz-bg
 	box-shadow: 0 2px 50px rgba(0,0,0,.5)
-	+r(1024)
-		display: flex
+	display: flex
 	&__row
+		width: 100% 
 		display: flex
 		flex-flow: row nowrap
 		align-items: center
@@ -30,7 +32,15 @@
 		align-self: center
 		+r(840)
 			margin-right: 10px
-		
+	&__btn
+		display: inline-block
+		color: white
+		line-height: 20px
+	&__menu__item
+		background: $quiz-bg
+
+
+
 .login
 	&-status
 	&-details__button
