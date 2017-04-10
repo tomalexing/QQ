@@ -70,7 +70,7 @@ export const customStyles ={
     dropDownMenuItem : {
         backgroundColor: '#474E65',
         color: 'white',
-        width: '200px'
+        width: '200px' 
     }
 
 }
