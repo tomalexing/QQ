@@ -12,11 +12,11 @@ $quiz-red: #FC3868
 		align-items: center
 		justify-content: space-between
 		padding: 10px
-		img
+		img.logo
 			height: 50px
 		+r(1024)
 			padding: 0 16px
-			img
+			img.logo
 				height: 50px
 				+r(375)
 					height: 36px
@@ -33,14 +33,95 @@ $quiz-red: #FC3868
 		+r(840)
 			margin-right: 10px
 	&__btn
+		position: relative
 		display: inline-block
 		color: white
-		line-height: 20px
-	&__menu__item
+		line-height: 55px
+		vertical-align: middle
+		height: 55px
+		margin-right: 25px
+		cursor: pointer
+		user-select: none
+		&.active:after
+			content: ''
+			position: absolute
+			bottom: 15px
+			left: 0px
+			height: 2px
+			width: 100%
+			background: white
+		&.active .quiz-header__menu__items
+			z-index: 120
+			+tr(transform .4s ease-out)
+			transform: scale(1)
+	&__menu__items
+		position: absolute
+		top: 49px
+		z-index: 0
+		visibility: hidden
+		border-radius: 6px
 		background: $quiz-bg
-
-
-
+		left: -240px
+		box-shadow: 0 2px 30px rgba(0,0,0,.5)
+		overflow: hidden
+		+tr(transform .4s ease-out)
+		transform: scale(.1)
+		transform-origin: 85% 0
+	&__menu__item:last-child
+		border-bottom: none
+	&__menu__item
+		display: flex
+		align-items: center
+		width: 300px
+		background: $quiz-bg
+		user-select: none
+		border-bottom: 1px solid rgba(255,255,255,.5)
+		&:hover
+			background: rgba(255,255,255,.2)
+		&-infogroup
+			height: 100%
+			width: 100%
+			display: block
+			user-select: none
+		&-link
+			display: block
+			text-decoration: none
+			cursor: pointer
+			display: flex
+			height: 72px
+			align-items: center
+			padding: 10px
+		&-catpic		
+			border-radius: 5px
+			transform: scale(1) translateZ(0)
+			+tr(transform .3s linear)
+			box-shadow: 0 2px 16px rgba(0,0,0,.5)
+			backface-visibility: hidden
+			&:hover
+				+tr(transform .3s linear)
+				transform: scale(1.1084) translateZ(0)
+		&-title
+			display: block
+			height: 50%
+			padding-left: 10px
+			line-height: 30px
+			color: white
+			overflow: hidden
+			text-overflow: ellipsis
+			white-space: nowrap
+			width: 220px
+		&-quantity	
+			display: inline-block
+			height: 18px
+			padding: 4px
+			line-height: 10px
+			color: white
+			border-radius: 10px
+			background-color: red
+			float: left
+			margin: 2px 0 0 8px
+			font-size: 10px
+			font-weight: 600
 .login
 	&-status
 	&-details__button

@@ -59,6 +59,7 @@ $quiz-red: #FC3868
 .quiz
 	margin: auto
 	max-width: 100%
+	user-select: none
 	+r(1280)
 		margin: 50px 20px 50px
 	+r(840)
@@ -74,6 +75,7 @@ $quiz-red: #FC3868
 		min-height: 444px
 		box-shadow:  0px 2px 20px 0px rgba(0, 0, 0, 0.5)
 	&-cart__title
+		user-select: none
 		padding: 22px 50px
 		font-size: 26px
 		color: white
@@ -84,6 +86,7 @@ $quiz-red: #FC3868
 		flex-wrap: nowrap
 		flex-direction: row
 		background-color: white
+		user-select: none
 		+r(840)
 			flex-wrap: wrap
 			flex-direction: column
@@ -119,6 +122,7 @@ $quiz-red: #FC3868
 			background: rgba(#FC3868, 0.7)
 			transform: scale(0)
 			border-radius: 100%
+			user-select: none
 			&.animated
 				animation: ripple 0.65s linear forwards
 
@@ -286,12 +290,14 @@ $quiz-red: #FC3868
 
 .quiz-stepper
 	position: absolute
-	top: 52px
+	top: 72px
 	left: 0px
 	height: 3px
 	width: 100%
 	background: white
 	display: flex
+	+r(1024)
+		top: 52px
 	&__in
 		display: inline-block
 		height: 100%

@@ -159,27 +159,19 @@ class Category extends React.Component {
             transitionEndPromise         = this.transitionEndPromise;
 
         this.setState({ loading: true }, () => {
-            // quizRef.style.transition = `transform 2s ease-in-out`; 
-            // quizRef.style.transform = `translateX(0px)`;
+            // this.fake.style.transition = `transform 2s ease-in-out`; 
+            // this.fake.style.transform = `translateX(0px)`;
+            // this.norm.style.transform = `translateX(1000px)`;
             // requestAnimationFramePromise()
             //     .then( _ => requestAnimationFramePromise())
             //     .then( _ => {
-            //         quizRef.style.transform = `translateX(1000px) scale(.4)`;
+            //         cb();
+            //         this.fake.style.transform = `translateX(-1000px) scale(.4)`;
+            //         this.norm.style.transition = `transform 2s ease-in-out`;
+            //         this.norm.style.transform = `translateX(0)`;
             //         return this.transitionEndPromise(quizRef)
             //     })
-                
-            //     .then( _ => {
-            //         quizRef.style.transform = `translateX(0px) scale(1)`; 
-                 
-            //         return this.transitionEndPromise(quizRef)
-            //     })
-            //     .then( _ => {
-            //         quizRef.style.transition = '';
-            //         return this.transitionEndPromise(quizRef) })
-            //     .then( _ => {
-            //         quizRef.style.transform = '';
-            //     });
-              cb();  
+             cb();
         });
     }
 
@@ -214,7 +206,7 @@ class Category extends React.Component {
     getStepContent(stepIndex) {
 
         let {id, stepperQuiz} =  this.getQuizByIndex(stepIndex);
-
+        
         const param = {
                     question: stepperQuiz['question'],
                     q1: Object.values(stepperQuiz['answers'])[0],
@@ -223,8 +215,9 @@ class Category extends React.Component {
                     leftCartUID: Object.entries(stepperQuiz['answers'])[0][0],
                     rightCartUID: Object.entries(stepperQuiz['answers'])[1][0]
                 }
+        
         return (
-                <Cart quiz={param} />
+                <Cart  quiz={param} />
             );
         
     }
@@ -255,22 +248,9 @@ class Category extends React.Component {
             <div style={contentStyle}>
                 <div>{this.getStepContent(stepIndex)}</div>
                 <div className={'quiz-pagination__group__btn'} >
-                    <RaisedButton
-                        className={cx('quiz-btn','quiz-pagination__btn')}
-                        label="Back"
-                        style={alterBtnStyle.style}
-                        buttonStyle={alterBtnStyle.buttonStyle}
-                        onTouchTap={this.handlePrev}
-                        labelStyle={alterBtnStyle.labelStyle}
-                    />
-                    <RaisedButton
-                        className={cx('quiz-btn', 'quiz-header__create')}
-                        label={stepIndex === 2 ? 'Finish' : 'Next'}
-                        style={alterBtnStyle.style}
-                        buttonStyle={alterBtnStyle.buttonStyle}
-                        onTouchTap={this.handleNext}
-                        labelStyle={alterBtnStyle.labelStyle}
-                    />
+                    
+                    <button className={cx('quiz-btn','quiz-pagination__btn')} onTouchTap={this.handlePrev}>Back</button>
+                    <button className={cx('quiz-btn','quiz-pagination__btn')} onTouchTap={this.handleNext}>{stepIndex === 2 ? 'Finish' : 'Next'}</button>
                  
                 </div>
             </div>
@@ -287,15 +267,13 @@ class Category extends React.Component {
         const { loading, stepIndex } = this.state;
         return (
 
-            <Layout>
-                <div className={"quiz-container"}>
+            <Layout className={"quiz-container"}>
                     {
                         (Object.entries(this.state.quiz).length > 0 )
                             ?
                             <div className={'quiz'} ref={node => (this.quizRef = node)}>
                                 <div  className={'quiz-stepper'} >
                                     {Array.from(Array(stepIndex+1).keys()).map(i=>{
-                                        console.log(i)
                                         return (
                                             <div className={'quiz-stepper__in active'} key={shortid.generate()}></div>
                                         )
@@ -314,7 +292,7 @@ class Category extends React.Component {
                                 <p>Pick That You Like More</p>
                             </div>
                     }
-                </div>
+              
             </Layout>
         );
     }

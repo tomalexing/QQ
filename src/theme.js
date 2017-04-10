@@ -66,11 +66,6 @@ export const customStyles ={
         style: {
             borderRadius: "20px", 
         }
-    },
-    dropDownMenuItem : {
-        backgroundColor: '#474E65',
-        color: 'white',
-        width: '200px' 
     }
 
 }
