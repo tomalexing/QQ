@@ -48,7 +48,7 @@ export default {
     ripple: {
         color: "#000"
     },
-
+    
 };
 export const customStyles ={
 

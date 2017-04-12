@@ -28,12 +28,13 @@ import { getQuizAll, getMeta, getCats } from "./../../src/actionCreators"
 import { connect } from 'react-redux'
 
 const {alterBtnStyle, dropDownMenu, dropDownMenuItem} =  customStyles
+const    requestAnimationFramePromise = _ => new Promise(requestAnimationFrame);
+const    transitionEndPromise = elem => new Promise(resolve => {
+            elem.addEventListener('transitionend', resolve , {once: true})
+        })
 
-const requestAnimationFramePromise = _ => new Promise(requestAnimationFrame);
-const transitionEndPromise = elem => new Promise(resolve => {
-        elem.addEventListener('transitionend', resolve , {once: true});
-    })
 
+let listenerDropCarts = false;
 class Header extends React.Component {
 
   constructor(props) {
@@ -44,9 +45,18 @@ class Header extends React.Component {
       menuOpen: false
     }
   }
+
+  elementIn(container, element) {
+    if(!element) {
+      return false
+    }
+    return (element && element.className.includes(container.className)) || this.elementIn(container, element.parentElement);
+  }
+
   getHost(){
     return window.location.origin
   }
+
   handleOpen = () => {
     this.setState({ open: true })
   }
@@ -58,32 +68,30 @@ class Header extends React.Component {
   getChildContext() {
     return { muiTheme: getMuiTheme(myTheme) }
   }
+
   componentWillReceiveProps(nextProps){
+     if(this.refs.dropCats && !listenerDropCarts){
+        listenerDropCarts = true;
+        document.body.addEventListener('click', (ev) => {
+          if(  !this.elementIn( this.refs.dropCatsCont, ev.target) ){
+             if (this.state.menuOpen )this.tootleMenuClass();
+          }
+        })
+     }
       this.state = {
           cats: nextProps.cats || null
       }
   }
+
   componentWillMount() {
     let { getCats } = this.props;
     getCats();
   }
-  tootleMenuClass() {
-    this.setState({menuOpen: !this.state.menuOpen }, () => {
-          !this.state.menuOpen?
-          (
-          requestAnimationFramePromise()
-              .then( _ => requestAnimationFramePromise())
-              .then( _ => {
-                  return transitionEndPromise(this.node)
-              })
-              .then( _ => {
-                  this.node.style.visibility = `hidden`; 
-              })
-          ):
 
-          this.node.style.visibility = `visible`
-        });
+  tootleMenuClass() {
+    this.setState({menuOpen: !this.state.menuOpen })
   }
+
   render() {
     return (
       <header className={`quiz-header`}>
@@ -93,14 +101,14 @@ class Header extends React.Component {
           </Link>
           <div className="quiz-header__spacer"></div>
           <div  className={cx('quiz-header__btn', this.state.menuOpen?'active':'')} 
-            onClick={this.tootleMenuClass.bind(this)}
+            onClick={this.tootleMenuClass.bind(this) } ref={'dropCatsCont'}
           >
             Polls
           {
              
               this.state.cats
                 ?
-                  <div ref={(node)=>this.node=node} className={'quiz-header__menu__items'} >
+                  <div  className={'quiz-header__menu__items'} ref={'dropCats'}>
                     {Object.values(this.state.cats).map((cat, index) => {
                       let catName = cat[0];
                       return <div key={index} className={'quiz-header__menu__item'} >

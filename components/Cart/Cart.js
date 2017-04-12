@@ -12,6 +12,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import myTheme from "./../../src/theme"
 
+const    requestAnimationFramePromise = _ => new Promise(requestAnimationFrame);
+const    transitionEndPromise = elem => new Promise(resolve => {
+            elem.addEventListener('transitionend', resolve , {once: true})
+        })
+
 class Cart extends React.Component {
 
     constructor(props) {
@@ -39,6 +44,34 @@ class Cart extends React.Component {
 
     }
 
+
+    componentWillEnter (callback) {
+        const el = this.container;
+        el.transition = `transform 2s ease-in-out`; 
+        el.transform = `translateX(1000px)`;
+        requestAnimationFramePromise()
+            .then( _ => requestAnimationFramePromise())
+            .then( _ =>  {
+                el.style.transform = `translateX(0px)`;
+                return this.transitionEndPromise(quizRef);
+            })
+            .then( _ => {
+                callback();
+            })
+    }
+
+    componentWillLeave (callback) {
+        const el = this.container;
+         requestAnimationFramePromise()
+            .then( _ => requestAnimationFramePromise())
+            .then( _ =>  {
+                el.style.transform = `translateX(0px)`;
+                return this.transitionEndPromise(quizRef);
+            })
+            .then( _ => {
+                callback();
+            })
+    }
     _vote(postRef, uid, inc) {
         postRef.transaction(function (post) {
             if (post && post[uid] && inc === "inc") {
@@ -247,7 +280,7 @@ class Cart extends React.Component {
         cookie.save(`cartIsChoosed-${this.props.quiz.cartId}`, this.state.cartIsChoosedLeft ? `Left` :
             this.state.cartIsChoosedRight ? `Right` : '', { path: '/' })
 
-        return (<div className="quiz-cart " id={this.props.quiz.cartId}>
+        return (<div className="quiz-cart " id={this.props.quiz.cartId} ref={c => this.container = c}>
             <div className="quiz-cart__title ">
                 {question}
             </div>
@@ -319,7 +352,7 @@ class Cart extends React.Component {
                         <RaisedButton 
                             label="Share"
                             className={"btn"}
-                            style={{borderRadius: "20px"}}
+                            style={{borderRadius: "20px", boxShadow: "none"}}
                             buttonStyle={{borderRadius: "20px",zIndex: 1, overflow: 'hidden'}}
                             onTouchTap={this.handleOpen}
                             secondary={true}

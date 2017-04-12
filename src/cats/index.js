@@ -11,6 +11,9 @@ import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/content/forward';
 import { getQuizByID, getCats, getMeta } from './../actionCreators'
 
+import PageTransition from 'react-router-page-transition';
+
+
 class Categoties extends React.Component{
 
     constructor(props){
@@ -80,7 +83,11 @@ class Categoties extends React.Component{
                                     key={this.getHost + '/' +tile.srcImg}
                                     title={tile.title}
                                     subtitle={<span>Quantity: <b>{tile.quantity}</b></span>}
-                                    actionIcon={<IconButton href={`/cat/${Object.entries(this.state.cats)[index][0]}`}><StarBorder color="white" /></IconButton>}
+                                    actionIcon={
+                                        <PageTransition>
+                                                <IconButton href={`/cat/${Object.entries(this.state.cats)[index][0]}`}><StarBorder color="white" /></IconButton>
+                                         </PageTransition>
+                                         }
                                     actionPosition="right"
                                     titlePosition="top"
                                     titleBackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
@@ -89,6 +96,7 @@ class Categoties extends React.Component{
                                     >
                                     <img src={this.getHost + '/' +tile.srcImg} />
                                     </GridTile>
+                                    
                                 ))}
                                 </GridList>
                             </div>

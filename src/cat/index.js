@@ -19,7 +19,7 @@ import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import TextField from 'material-ui/TextField';
 import shortid from 'shortid';
 import cx from 'classnames';
-
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 
 const {alterBtnStyle} =  customStyles
 
@@ -217,7 +217,9 @@ class Category extends React.Component {
                 }
         
         return (
-                <Cart  quiz={param} />
+                <TransitionGroup>
+                    <Cart  quiz={param} />
+                </TransitionGroup>
             );
         
     }
@@ -265,9 +267,10 @@ class Category extends React.Component {
             marginRight: 20,
         };
         const { loading, stepIndex } = this.state;
+        
         return (
 
-            <Layout className={"quiz-container"}>
+            <Layout className={"quiz-container transition-item"}>
                     {
                         (Object.entries(this.state.quiz).length > 0 )
                             ?

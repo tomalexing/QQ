@@ -95,6 +95,7 @@ class Footer extends React.Component {
                   className={"quiz-btn quiz-submit"}
                   style={{ borderRadius: "20px" }}
                   buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
+                  
                   />
               </fieldset>
           </form>
@@ -109,6 +110,7 @@ class Footer extends React.Component {
                   style={{ borderRadius: "20px" }}
                   buttonStyle={{ borderRadius: "20px", zIndex: 1, overflow: 'hidden' }}
                   onTouchTap={this.handleClose}
+                  
                   />
               ]}
               modal={false}

@@ -52,8 +52,9 @@ $quiz-red: #FC3868
 			background: white
 		&.active .quiz-header__menu__items
 			z-index: 120
-			+tr(transform .4s ease-out)
-			transform: scale(1)
+			transform: scale(1) translateY(0px)
+			visibility: visible
+			+tr(transform .3s ease-out)
 	&__menu__items
 		position: absolute
 		top: 49px
@@ -64,8 +65,8 @@ $quiz-red: #FC3868
 		left: -240px
 		box-shadow: 0 2px 30px rgba(0,0,0,.5)
 		overflow: hidden
-		+tr(transform .4s ease-out)
-		transform: scale(.1)
+		+tr(transform 0s ease-out)
+		transform: scale(.1) translateY(100px)
 		transform-origin: 85% 0
 	&__menu__item:last-child
 		border-bottom: none
@@ -75,9 +76,13 @@ $quiz-red: #FC3868
 		width: 300px
 		background: $quiz-bg
 		user-select: none
-		border-bottom: 1px solid rgba(255,255,255,.5)
+		border-bottom: 1px solid rgba(255,255,255,.2)
 		&:hover
 			background: rgba(255,255,255,.2)
+			.quiz-header__menu__item-catpic
+				+tr(transform .3s linear)
+				transform: scale(1.1084) translateZ(0)	
+				box-shadow: 0 2px 16px rgba(0,0,0,.5)
 		&-infogroup
 			height: 100%
 			width: 100%
@@ -95,14 +100,11 @@ $quiz-red: #FC3868
 			border-radius: 5px
 			transform: scale(1) translateZ(0)
 			+tr(transform .3s linear)
-			box-shadow: 0 2px 16px rgba(0,0,0,.5)
 			backface-visibility: hidden
-			&:hover
-				+tr(transform .3s linear)
-				transform: scale(1.1084) translateZ(0)
 		&-title
 			display: block
 			height: 50%
+			font-size: 16px
 			padding-left: 10px
 			line-height: 30px
 			color: white
@@ -110,16 +112,17 @@ $quiz-red: #FC3868
 			text-overflow: ellipsis
 			white-space: nowrap
 			width: 220px
+			text-transform: capitalize
 		&-quantity	
 			display: inline-block
 			height: 18px
-			padding: 4px
+			padding: 4px 6px
 			line-height: 10px
 			color: white
 			border-radius: 10px
-			background-color: red
+			background-color: $quiz-red
 			float: left
-			margin: 2px 0 0 8px
+			margin: 3px 0 0 8px
 			font-size: 10px
 			font-weight: 600
 .login
